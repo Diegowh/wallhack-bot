@@ -2,12 +2,10 @@ import requests
 
 
 class ServerData:
-    def __init__(self, server_id=24295154):
+    def __init__(self, server_id):
         self.server_id = server_id
         self.url = f"https://api.battlemetrics.com/servers/{
             self.server_id}"
-
-        self.data = self.get_data()
 
     def get_data(self) -> dict:
         response = requests.get(self.url).json()
