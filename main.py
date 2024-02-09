@@ -7,12 +7,12 @@ from server_pop import ServerData
 
 load_dotenv()
 TOKEN = os.getenv("BOT_TOKEN")
-
+SERVER_ID = os.getenv("SERVER_ID")
 
 intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix='/', intents=intents)
-server_data = ServerData()
+server_data = ServerData(server_id=SERVER_ID)
 
 # When the Bot starts
 
