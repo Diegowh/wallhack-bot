@@ -12,7 +12,7 @@ class ServerData:
     def get(self) -> list:
         return requests.get(self.url).json()
 
-    def pop(self, server_number: int):
+    def pop(self, server_number: int = 2154) -> str:
         server_list = self.get()
 
         assert isinstance(server_list, list)
@@ -21,4 +21,11 @@ class ServerData:
             name = server.get("Name")
 
             if str(server_number) in name:
-                return server.get("NumPlayers")
+
+                # Obtain and return the server pop formatted
+                num_players = server.get("NumPlayers")
+                pop_msg = self._pop_message(num_players)
+                return pop_msg
+
+    def _pop_message(self, players: int) -> str:
+        return f"{players}/70"
