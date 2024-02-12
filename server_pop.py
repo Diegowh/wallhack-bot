@@ -1,18 +1,24 @@
 import requests
+import os
+from dotenv import load_dotenv
 
 
 class ServerData:
-    def __init__(self, server_id):
-        self.server_id = server_id
-        self.url = f"https://api.battlemetrics.com/servers/{
-            self.server_id}"
 
-    def get_data(self) -> dict:
-        response = requests.get(self.url).json()
-        data = response.get("data")
-        return data
+    def __init__(self):
+        load_dotenv()
+        self.url = os.getenv("SERVERLIST_URL")
 
-    def pop(self):
-        data = self.get_data()
-        players = data.get("attributes").get("players")
-        return f"{players}/70 Players on Server"
+    def get(self) -> list:
+        return requests.get(self.url).json()
+
+    def pop(self, server_number: int):
+        server_list = self.get()
+
+        assert isinstance(server_list, list)
+
+        for server in server_list:
+            name = server.get("Name")
+
+            if str(server_number) in name:
+                return server.get("NumPlayers")
