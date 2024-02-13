@@ -3,16 +3,15 @@ from discord.ext import commands
 from dotenv import load_dotenv
 import os
 
-from server_pop import ServerData
+from server_data import ServerData
 
 load_dotenv()
 TOKEN = os.getenv("BOT_TOKEN")
-SERVER_ID = os.getenv("SERVER_ID")
 
 intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix='/', intents=intents)
-server_data = ServerData(server_id=SERVER_ID)
+server_data = ServerData()
 
 # When the Bot starts
 
@@ -27,11 +26,13 @@ async def on_ready():
         print(e)
 
 
-# Pop command
-@bot.tree.command(name="pop", description="Gives the server pop of 2154")
-async def pop(interaction: discord.Interaction):
-    msg = server_data.pop()
-    await interaction.response.send_message(msg)
+@bot.tree.command(name="pop")
+async def pop(interaction: discord.Interaction, server_number: int = 2154):
+    pop_msg = server_data.pop()
+
+    embed = discord.Embed(title=f"TheIsland{server_number}", color=0x00ff00)
+    embed.add_field(name="Active Players", value=pop_msg, inline=True)
+    await interaction.response.send_message(embed=embed)
 
 
 # @bot.tree.command(name="test", description="test command")
