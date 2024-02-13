@@ -29,7 +29,7 @@ async def on_ready():
 async def pop(interaction: discord.Interaction, server_number: int = 2154):
     pop_msg = server_data.pop()
 
-    embed = discord.Embed(title=f"TheIsland{server_number}", color=0x00ff00)
+    embed = discord.Embed(title=server_data.server_name, color=0x00ff00)
     embed.add_field(name="Active Players", value=pop_msg, inline=True)
     await interaction.response.send_message(embed=embed)
 

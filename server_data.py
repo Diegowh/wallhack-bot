@@ -1,5 +1,6 @@
 import requests
 import os
+import json
 from dotenv import load_dotenv
 
 
@@ -9,23 +10,27 @@ class ServerData:
         load_dotenv()
         self.url = os.getenv("SERVERLIST_URL")
 
+        with open("server_order.json", "r") as f:
+            self.server_order = json.load(f)
+
     def get(self) -> list:
         return requests.get(self.url).json()
 
     def pop(self, server_number: int = 2154) -> str:
-        server_list = self.get()
+        server_data_list = self.get()
 
-        assert isinstance(server_list, list)
+        assert isinstance(server_data_list, list)
 
-        for server in server_list:
-            name = server.get("Name")
+        position = self.server_order.get(str(server_number))
 
-            if str(server_number) in name:
+        server_data = server_data_list[position]
 
-                # Obtain and return the server pop formatted
-                num_players = server.get("NumPlayers")
-                pop_msg = self._pop_message(num_players)
-                return pop_msg
+        self.server_name = server_data.get("Name")
+
+        # Obtain and return the server pop formatted
+        num_players = server_data.get("NumPlayers")
+        pop_msg = self._pop_message(num_players)
+        return pop_msg
 
     def _pop_message(self, players: int) -> str:
         return f"{players}/70"
