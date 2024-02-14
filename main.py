@@ -3,6 +3,7 @@ from discord import app_commands
 from discord.ext import commands
 from dotenv import load_dotenv
 import os
+import asyncio
 
 from server_data import ServerData
 
@@ -13,6 +14,8 @@ intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix='/', intents=intents)
 server_data = ServerData()
+
+running_in_servers = set()
 
 
 @bot.event
@@ -29,9 +32,66 @@ async def on_ready():
 async def pop(interaction: discord.Interaction, server_number: int = 2154):
     pop_msg = server_data.pop()
 
-    embed = discord.Embed(title=server_data.server_name, color=0x00ff00)
+    embed = discord.Embed(title="EU-PVP-TheIsland2154", color=0x00ff00)
     embed.add_field(name="Active Players", value=pop_msg, inline=True)
     await interaction.response.send_message(embed=embed)
 
+
+@bot.command(name="status")
+async def status(ctx):
+
+    # Check if the bot is already running on the server, if not just run it
+    server_id = ctx.guild.id
+    if server_id in running_in_servers:
+        await ctx.send("I'm already running, wait :rage: ")
+        return
+
+    running_in_servers.add(server_id)
+    role = f"<@&492494724528340992>"
+
+    await ctx.send(f"Cheching server status... UwU")
+
+    counter = 1
+    while True:
+
+        # Checks for server status every 15 seconds
+        if not server_data.is_server_down():
+            await ctx.send(f"{role} Server is up!")
+            print("Server status: Online")
+            break
+
+        print(f"Server status: Offline - {counter}")
+        counter += 1
+        await asyncio.sleep(15)
+
+    running_in_servers.remove(server_id)
+
+# @bot.tree.command(name="status")
+# async def status(interaction: discord.Interaction):
+#     role = f"<@&492494724528340992>"
+
+#     while True:
+#         if not server_data.is_server_down():
+#             await interaction.response.send_message(f"{role} Server is up!")
+#             break
+
+#         await asyncio.sleep(30)
+
+
+@bot.command(name="test")
+async def test(ctx):
+
+    while True:
+        if not server_data.is_server_down():
+            await ctx.send(f"Test: Server is up!")
+            break
+
+        await asyncio.sleep(30)
+
+
+@bot.tree.command(name="mike")
+async def pop(interaction: discord.Interaction):
+
+    await interaction.response.send_message("Mike")
 
 bot.run(TOKEN)

@@ -1,6 +1,5 @@
 import requests
 import os
-import json
 from dotenv import load_dotenv
 
 
@@ -10,27 +9,35 @@ class ServerData:
         load_dotenv()
         self.url = os.getenv("SERVERLIST_URL")
 
-        with open("server_order.json", "r") as f:
-            self.server_order = json.load(f)
-
     def get(self) -> list:
-        return requests.get(self.url).json()
+        response = requests.get(self.url).json()
+        assert isinstance(response, list)
+        return response
 
     def pop(self, server_number: int = 2154) -> str:
-        server_data_list = self.get()
+        server = self._find_server(server_number)
 
-        assert isinstance(server_data_list, list)
-
-        position = self.server_order.get(str(server_number))
-
-        server_data = server_data_list[position]
-
-        self.server_name = server_data.get("Name")
+        if server is None:
+            return "Server not found"
 
         # Obtain and return the server pop formatted
-        num_players = server_data.get("NumPlayers")
+        num_players = server.get("NumPlayers")
         pop_msg = self._pop_message(num_players)
         return pop_msg
 
     def _pop_message(self, players: int) -> str:
         return f"{players}/70"
+
+    def is_server_down(self, server_number: int = 2154) -> bool:
+        server = self._find_server(server_number)
+        return server is None
+
+    def _find_server(self, server_number: int) -> dict:
+        server_list = self.get()
+
+        for server in server_list:
+            if str(server_number) in server.get("Name", ""):
+                self.name = server.get("Name")
+                return server
+
+        return None
