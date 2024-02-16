@@ -15,7 +15,7 @@ intents.message_content = True
 bot = commands.Bot(command_prefix='/', intents=intents)
 server_data = ServerData()
 
-running_in_servers = set()
+running_status_in_servers = set()
 
 
 @bot.event
@@ -42,11 +42,11 @@ async def status(ctx):
 
     # Check if the bot is already running on the server, if not just run it
     server_id = ctx.guild.id
-    if server_id in running_in_servers:
+    if server_id in running_status_in_servers:
         await ctx.send("I'm already running, wait :rage: ")
         return
 
-    running_in_servers.add(server_id)
+    running_status_in_servers.add(server_id)
     role = f"<@&492494724528340992>"
 
     await ctx.send(f"Cheching server status... UwU")
@@ -64,7 +64,7 @@ async def status(ctx):
         counter += 1
         await asyncio.sleep(15)
 
-    running_in_servers.remove(server_id)
+    running_status_in_servers.remove(server_id)
 
 
 class BotState:
@@ -73,24 +73,37 @@ class BotState:
 
 
 bot_state = BotState()
+running_autopop_in_servers = set()
 
 
-@bot.command(name="test")
-async def test(ctx):
+@bot.command(name="on")
+async def on(ctx):
+    server_id = ctx.guild.id
+    if server_id in running_autopop_in_servers:
+        await ctx.send("I'm already running :rage: ")
+        return
 
+    running_autopop_in_servers.add(server_id)
     bot_state.running = True
+    await ctx.send(f"Autopop on! :smiling_imp:")
     while bot_state.running:
         if not server_data.is_server_down():
             pop_msg = server_data.pop()
             embed = discord.Embed(title="EU-PVP-TheIsland2154", color=0x00ff00)
             embed.add_field(name="Active Players", value=pop_msg, inline=True)
             await ctx.send(embed=embed)
-            await asyncio.sleep(60)
+            for _ in range(60):
+                await asyncio.sleep(1)
+                if not bot_state.running:
+                    break
+
+    running_autopop_in_servers.remove(server_id)
+    await ctx.send(f"Autopop off :smiling_face_with_tear:")
 
 
-@bot.tree.command(name="stoptest")
-async def stoptest(interaction: discord.Interaction):
-    bot_state.running = False
-    await interaction.response.send_message("Stopped")
+@bot.command(name="off")
+async def off(ctx):
+    if bot_state.running:
+        bot_state.running = False
 
 bot.run(TOKEN)
