@@ -66,32 +66,31 @@ async def status(ctx):
 
     running_in_servers.remove(server_id)
 
-# @bot.tree.command(name="status")
-# async def status(interaction: discord.Interaction):
-#     role = f"<@&492494724528340992>"
 
-#     while True:
-#         if not server_data.is_server_down():
-#             await interaction.response.send_message(f"{role} Server is up!")
-#             break
+class BotState:
+    def __init__(self):
+        self.running = False
 
-#         await asyncio.sleep(30)
+
+bot_state = BotState()
 
 
 @bot.command(name="test")
 async def test(ctx):
 
-    while True:
+    bot_state.running = True
+    while bot_state.running:
         if not server_data.is_server_down():
-            await ctx.send(f"Test: Server is up!")
-            break
+            pop_msg = server_data.pop()
+            embed = discord.Embed(title="EU-PVP-TheIsland2154", color=0x00ff00)
+            embed.add_field(name="Active Players", value=pop_msg, inline=True)
+            await ctx.send(embed=embed)
+            await asyncio.sleep(60)
 
-        await asyncio.sleep(30)
 
-
-@bot.tree.command(name="mike")
-async def pop(interaction: discord.Interaction):
-
-    await interaction.response.send_message("Mike")
+@bot.tree.command(name="stoptest")
+async def stoptest(interaction: discord.Interaction):
+    bot_state.running = False
+    await interaction.response.send_message("Stopped")
 
 bot.run(TOKEN)
