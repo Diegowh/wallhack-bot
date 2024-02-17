@@ -4,6 +4,7 @@ from discord.ext import commands
 from dotenv import load_dotenv
 import os
 import asyncio
+import time
 
 from server_data import ServerData
 
@@ -70,6 +71,7 @@ async def status(ctx):
 class BotState:
     def __init__(self):
         self.running = False
+        self.last_message = None
 
 
 bot_state = BotState()
@@ -89,10 +91,19 @@ async def on(ctx):
     while bot_state.running:
         if not server_data.is_server_down():
             pop_msg = server_data.pop()
+            time_now = f"<t:{int(time.time())}>"
             embed = discord.Embed(title="EU-PVP-TheIsland2154", color=0x00ff00)
             embed.add_field(name="Active Players", value=pop_msg, inline=True)
-            await ctx.send(embed=embed)
-            for _ in range(60):
+            embed.add_field(name="Last update", value=time_now, inline=True)
+
+            if bot_state.last_message:
+                await bot_state.last_message.edit(embed=embed)
+                print(f"Message {bot_state.last_message.id} edited!")
+            else:
+                bot_state.last_message = await ctx.send(embed=embed)
+                print(f"Message {bot_state.last_message.id} sent!")
+
+            for _ in range(30):
                 await asyncio.sleep(1)
                 if not bot_state.running:
                     break
