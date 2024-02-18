@@ -98,10 +98,10 @@ async def on(ctx):
 
             if bot_state.last_message:
                 await bot_state.last_message.edit(embed=embed)
-                print(f"Message {bot_state.last_message.id} edited!")
+                # print(f"Message {bot_state.last_message.id} edited!")
             else:
                 bot_state.last_message = await ctx.send(embed=embed)
-                print(f"Message {bot_state.last_message.id} sent!")
+                # print(f"Message {bot_state.last_message.id} sent!")
 
             for _ in range(30):
                 await asyncio.sleep(1)
