@@ -80,6 +80,7 @@ running_autopop_in_servers = set()
 
 @bot.command(name="on")
 async def on(ctx):
+    # Check if the bot is already running on the server, if not just run it
     server_id = ctx.guild.id
     if server_id in running_autopop_in_servers:
         await ctx.send("I'm already running :rage: ")
@@ -87,9 +88,9 @@ async def on(ctx):
 
     running_autopop_in_servers.add(server_id)
     bot_state.running = True
-    await ctx.send(f"Autopop on! :smiling_imp:")
+    # await ctx.send(f"Autopop on! :smiling_imp:")
     while bot_state.running:
-        if not server_data.is_server_down():
+        if not server_data.is_server_down():  # To avoid running while the server is down
             pop_msg = server_data.pop()
             time_now = f"<t:{int(time.time())}>"
             embed = discord.Embed(title="EU-PVP-TheIsland2154", color=0x00ff00)
@@ -103,7 +104,8 @@ async def on(ctx):
                 bot_state.last_message = await ctx.send(embed=embed)
                 # print(f"Message {bot_state.last_message.id} sent!")
 
-            for _ in range(30):
+            # I use this method to allow the bot to be stopped while it's running because. I have to change the way this works
+            for _ in range(180):
                 await asyncio.sleep(1)
                 if not bot_state.running:
                     break
