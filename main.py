@@ -1,26 +1,35 @@
 import discord
-from discord import app_commands
 from discord.ext import commands
 from dotenv import load_dotenv
 import os
 import asyncio
 import time
-
 from server_data import ServerData
+from bot_state import BotState
+
 
 load_dotenv()
 TOKEN = os.getenv("BOT_TOKEN")
 
+# Discord intents setup
 intents = discord.Intents.default()
 intents.message_content = True
+
+# Bot instance
 bot = commands.Bot(command_prefix='/', intents=intents)
 server_data = ServerData()
+bot_state = BotState()
 
+# I use this set to avoid the bot to be running multiple times in the same server
 running_status_in_servers = set()
+running_autopop_in_servers = set()
 
 
 @bot.event
 async def on_ready():
+    """
+    Its called when the bot is connected to Discord. Its used to sync the commands and for debugging purposes.
+    """
     print(f'{bot.user} has connected to Discord!')
     try:
         synced = await bot.tree.sync()
@@ -31,6 +40,9 @@ async def on_ready():
 
 @bot.tree.command(name="pop")
 async def pop(interaction: discord.Interaction, server_number: int = 2154):
+    """
+    Gets the server pop and sends it as an embed message.
+    """
     pop_msg = server_data.pop()
 
     embed = discord.Embed(title="EU-PVP-TheIsland2154", color=0x00ff00)
@@ -40,6 +52,9 @@ async def pop(interaction: discord.Interaction, server_number: int = 2154):
 
 @bot.command(name="status")
 async def status(ctx):
+    """
+    Checks the server status and informs the user when the server is up.
+    """
 
     # Check if the bot is already running on the server, if not just run it
     server_id = ctx.guild.id
@@ -68,18 +83,12 @@ async def status(ctx):
     running_status_in_servers.remove(server_id)
 
 
-class BotState:
-    def __init__(self):
-        self.running = False
-        self.last_message = None
-
-
-bot_state = BotState()
-running_autopop_in_servers = set()
-
-
 @bot.command(name="on")
 async def on(ctx):
+    """
+    Turns on the auto-pop feature. It sends the server pop as an embed message every lapse of time.
+    """
+
     # Check if the bot is already running on the server, if not just run it
     server_id = ctx.guild.id
     if server_id in running_autopop_in_servers:
@@ -116,6 +125,9 @@ async def on(ctx):
 
 @bot.command(name="off")
 async def off(ctx):
+    """
+    Turns off the auto-pop feature.
+    """
     if bot_state.running:
         bot_state.running = False
 

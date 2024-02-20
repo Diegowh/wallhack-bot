@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 
 
 class ServerData:
+    """Gets the data from the ARK servers
+    """
 
     def __init__(self):
         load_dotenv()
