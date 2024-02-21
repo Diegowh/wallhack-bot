@@ -1,4 +1,5 @@
 import requests
+import discord
 
 
 class ServerData:
@@ -13,19 +14,27 @@ class ServerData:
         assert isinstance(response, list)
         return response
 
-    def pop(self, server_number: int) -> str:
+    def pop(self, server_number: int) -> discord.Embed:
         server = self._find_server(server_number)
 
         if server is None:
             return "Server not found"
 
-        # Obtain and return the server pop formatted
-        num_players = server.get("NumPlayers")
-        pop_msg = self._pop_message(num_players)
+        # Build the message
+        pop_msg = self._pop_message()
         return pop_msg
 
-    def _pop_message(self, players: int) -> str:
-        return f"{players}/70"
+    def _pop_message(self) -> discord.Embed:
+
+        # At this point self.server_data should have the server data
+        players = self.server_data.get("NumPlayers")
+        max_players = self.server_data.get("MaxPlayers")
+
+        embed = discord.Embed(title=self.name, color=0x00ff00)
+        embed.add_field(name="Active Players", value=f"{
+                        players}/{max_players}", inline=True
+                        )
+        return embed
 
     def is_server_down(self, server_number: int = 2154) -> bool:
         server = self._find_server(server_number)
