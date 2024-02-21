@@ -36,7 +36,7 @@ class ServerData:
                         )
         return embed
 
-    def is_server_down(self, server_number: int = 2154) -> bool:
+    def is_server_down(self, server_number) -> bool:
         server = self._find_server(server_number)
         return server is None
 
