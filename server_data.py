@@ -1,6 +1,4 @@
 import requests
-import os
-from dotenv import load_dotenv
 
 
 class ServerData:
@@ -8,8 +6,7 @@ class ServerData:
     """
 
     def __init__(self):
-        load_dotenv()
-        self.url = os.getenv("SERVERLIST_URL")
+        self.url = "https://cdn2.arkdedicated.com/servers/asa/officialserverlist.json"
 
     def get(self) -> list:
         response = requests.get(self.url).json()
