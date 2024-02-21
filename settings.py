@@ -1,1 +1,1 @@
-status_interval = 15
+status_interval: int = 15
