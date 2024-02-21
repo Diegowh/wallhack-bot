@@ -39,6 +39,7 @@ class ServerData:
 
         for server in server_list:
             if str(server_number) in server.get("Name", ""):
+                self.server_data = server
                 self.name = server.get("Name")
                 return server
 
