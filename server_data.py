@@ -13,7 +13,7 @@ class ServerData:
         assert isinstance(response, list)
         return response
 
-    def pop(self, server_number: int = 2154) -> str:
+    def pop(self, server_number: int) -> str:
         server = self._find_server(server_number)
 
         if server is None:
@@ -32,6 +32,9 @@ class ServerData:
         return server is None
 
     def _find_server(self, server_number: int) -> dict:
+
+        assert isinstance(server_number, int)
+
         server_list = self.get()
 
         for server in server_list:
