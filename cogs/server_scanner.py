@@ -21,7 +21,7 @@ class ServerScanner(commands.Cog):
         if not await validate_map_number(ctx, map_number):
             return
 
-        pop_msg = self.server_data.pop(map_number)
+        pop_msg = await self.server_data.pop(map_number)
 
         await ctx.send(embed=pop_msg)
 
@@ -51,7 +51,7 @@ class ServerScanner(commands.Cog):
         counter = 0
         while server_command_state.get("running") == True:
 
-            if not self.server_data.is_server_down(map_number):
+            if not await self.server_data.is_server_down(map_number):
                 await ctx.send(f"{role} {map_number} is up!")
                 server_command_state["maps"].remove(map_number)
                 server_command_state["running"] = False
@@ -63,7 +63,7 @@ class ServerScanner(commands.Cog):
             print(f"{map_number} status: Down - {counter}")
             await asyncio.sleep(settings.status_sleep_interval)
 
-    @commands.command()
+    @commands.command(name="autopop")
     async def autopop(self, ctx, arg: str):
         command_name = "autopop"
         # TODO: For now, the bot will only use this command for the server 2154. This will be changed in the future if needed.
@@ -82,7 +82,7 @@ class ServerScanner(commands.Cog):
             last_msg = None  # This will be used to avoid spamming
             while server_command_state["running"]:
 
-                pop_message = self.server_data.pop(map_number)
+                pop_message = await self.server_data.pop(map_number)
 
                 if last_msg is not None:
                     await last_msg.edit(embed=pop_message)
@@ -99,7 +99,7 @@ class ServerScanner(commands.Cog):
 
             if server_command_state["running"]:
                 server_command_state["running"] = False
-                await ctx.send("Autopop off! :smiling_imp:")
+                await ctx.send("Autopop off!")
 
         else:
             await ctx.send("Invalid argument. Use /help for more information.")

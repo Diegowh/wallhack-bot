@@ -16,8 +16,8 @@ class ServerData:
         assert isinstance(response, list)
         return response
 
-    def pop(self, map_number) -> discord.Embed:
-        server = self._find_server(map_number)
+    async def pop(self, map_number) -> discord.Embed:
+        server = await self._find_server(map_number)
 
         if server is None:
             time_now = f"<t:{int(time.time())}>"
@@ -47,13 +47,13 @@ class ServerData:
         embed.add_field(name="Last update", value=time_now, inline=True)
         return embed
 
-    def is_server_down(self, map_number) -> bool:
-        server = self._find_server(map_number)
+    async def is_server_down(self, map_number) -> bool:
+        server = await self._find_server(map_number)
         return server is None
 
-    def _find_server(self, map_number) -> dict:
+    async def _find_server(self, map_number) -> dict:
 
-        assert validate_map_number(map_number)
+        assert await validate_map_number(map_number)
 
         server_list = self.get()
 
