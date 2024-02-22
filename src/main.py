@@ -27,6 +27,9 @@ async def on_ready():
     await bot.add_cog(ServerScanner(bot=bot, bot_state=bot_state))
     print(f'{bot.user} has connected to Discord!')
     try:
+        synced = await bot.tree.sync()
+        print(f"Synced {len(synced)} commands.")
+
         bot_state.sync()
         print(f'We have logged in as {bot.user}')
         for command in bot.commands:

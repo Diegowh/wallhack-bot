@@ -5,7 +5,7 @@ from discord.ext import commands
 from server_data import ServerData
 from bot_state import BotState
 import settings as settings
-from utils import validate_map_number
+from utils import is_valid_map_number
 
 
 class ServerScanner(commands.Cog):
@@ -15,21 +15,23 @@ class ServerScanner(commands.Cog):
         self.server_data = ServerData()
         self.bot_state = bot_state
 
-    @commands.command()
+    @commands.command(name="pop")
     async def pop(self, ctx, map_number):
 
-        if not await validate_map_number(ctx, map_number):
-            return
+        # if not await is_valid_map_number(map_number):
+        #     await ctx.send("Map number must be a four digit number.")
+        #     return
 
         pop_msg = await self.server_data.pop(map_number)
 
         await ctx.send(embed=pop_msg)
 
-    @commands.command()
+    @commands.command(name="status")
     async def status(self, ctx, map_number):
         command_name = "status"
-        if not await validate_map_number(ctx, map_number):
-            return
+        # if not await is_valid_map_number(map_number):
+        #     await ctx.send("Map number must be a four digit number.")
+        #     return
 
         # Gives the discord server id where the command was called
         discord_server_id = ctx.guild.id
