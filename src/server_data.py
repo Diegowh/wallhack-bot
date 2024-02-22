@@ -1,7 +1,9 @@
-import requests
-import discord
-from src.utils import validate_map_number
 import time
+import requests
+
+import discord
+
+from src.utils import validate_map_number
 
 
 class ServerData:

@@ -1,7 +1,9 @@
+import os
+
+from dotenv import load_dotenv
 import discord
 from discord.ext import commands
-from dotenv import load_dotenv
-import os
+
 from src.bot_state import BotState
 from src.cogs.server_scanner import ServerScanner
 

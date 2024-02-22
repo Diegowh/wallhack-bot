@@ -1,10 +1,10 @@
+import asyncio
+
 from discord.ext import commands
+
 from src.server_data import ServerData
 from src.bot_state import BotState
-import asyncio
 import src.settings as settings
-
-
 from src.utils import validate_map_number
 
 
