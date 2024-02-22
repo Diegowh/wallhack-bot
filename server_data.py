@@ -1,6 +1,7 @@
 import requests
 import discord
 from utils import validate_map_number
+import time
 
 
 class ServerData:
@@ -30,11 +31,13 @@ class ServerData:
         # At this point self.server_data should have the server data
         players = self.server_data.get("NumPlayers")
         max_players = self.server_data.get("MaxPlayers")
+        time_now = f"<t:{int(time.time())}>"
 
         embed = discord.Embed(title=self.name, color=0x00ff00)
         embed.add_field(name="Active Players", value=f"{
                         players}/{max_players}", inline=True
                         )
+        embed.add_field(name="Last update", value=time_now, inline=True)
         return embed
 
     def is_server_down(self, map_number) -> bool:
