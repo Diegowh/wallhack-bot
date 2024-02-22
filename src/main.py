@@ -2,8 +2,8 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 import os
-from bot_state import BotState
-from cogs.server_scanner import ServerScanner
+from src.bot_state import BotState
+from src.cogs.server_scanner import ServerScanner
 
 load_dotenv()
 BOT_TOKEN = os.getenv("BOT_TOKEN")

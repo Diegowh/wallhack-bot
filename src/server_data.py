@@ -1,6 +1,6 @@
 import requests
 import discord
-from utils import validate_map_number
+from src.utils import validate_map_number
 import time
 
 
