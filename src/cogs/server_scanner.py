@@ -2,10 +2,10 @@ import asyncio
 
 from discord.ext import commands
 
-from src.server_data import ServerData
-from src.bot_state import BotState
-import src.settings as settings
-from src.utils import validate_map_number
+from server_data import ServerData
+from bot_state import BotState
+import settings as settings
+from utils import validate_map_number
 
 
 class ServerScanner(commands.Cog):

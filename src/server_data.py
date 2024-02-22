@@ -3,7 +3,7 @@ import requests
 
 import discord
 
-from src.utils import validate_map_number
+from utils import validate_map_number
 
 
 class ServerData:
