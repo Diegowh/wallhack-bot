@@ -11,7 +11,11 @@ class BotState:
         self.state = {}
 
     def sync(self):
-        for cog in self.bot.cogs.values():
-            for command in cog.get_commands():
-                self.state[command.name] = False
-                print(f"Command {command.name} synced.")
+        for guild in self.bot.guilds:
+            self.state[guild.id] = {}
+            for cog in self.bot.cogs.values():
+                for command in cog.get_commands():
+                    self.state[guild.id][command.name] = False
+                    print(f"Command {command.name} synced in guild {
+                          guild.id}."
+                          )
