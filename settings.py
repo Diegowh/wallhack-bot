@@ -1,1 +1,1 @@
-status_interval: int = 15
+status_sleep_interval: int = 15
