@@ -5,7 +5,7 @@ import asyncio
 import settings
 
 
-from utils import validate_server_number
+from utils import validate_map_number
 
 
 class ServerScanner(commands.Cog):
@@ -15,57 +15,50 @@ class ServerScanner(commands.Cog):
         self.server_data = ServerData()
         self.bot_state = bot_state
 
-        # Key: discord server id, Value: list of Ark server numbers
-        self.server_searching = {}
-        self.running_autpop_in_servers = set()
-
     @commands.command()
-    async def pop(self, ctx, server_number: int):
+    async def pop(self, ctx, map_number: int):
 
-        if not await validate_server_number(ctx, server_number):
+        if not await validate_map_number(ctx, map_number):
             return
 
-        pop_msg = self.server_data.pop(server_number)
+        pop_msg = self.server_data.pop(map_number)
 
         await ctx.send(embed=pop_msg)
 
     @commands.command()
-    async def status(self, ctx, server_number: int):
-
-        if not await validate_server_number(ctx, server_number):
+    async def status(self, ctx, map_number: int):
+        command_name = "status"
+        if not await validate_map_number(ctx, map_number):
             return
 
         # Gives the discord server id where the command was called
         discord_server_id = ctx.guild.id
-        if server_number in self.server_searching.get(discord_server_id):
-            await ctx.send(f"I'm already looking for {server_number} status, wait :rage: ")
+        server_command_state: dict = self.bot_state.state[discord_server_id][command_name]
+
+        # Check if the bot is already looking for the requested ARK server status
+        if map_number in server_command_state.get("maps"):
+            await ctx.send(f"I'm already looking for {map_number} status, wait :rage: ")
             return
 
-        if discord_server_id not in self.server_searching:
-            self.server_searching[discord_server_id] = [server_number]
-        else:
-            # The command is already running in the discord server, just add the server number to the list
-            self.server_searching[discord_server_id].append(server_number)
+        # Add the map to the list because the bot was not looking for it
+        server_command_state["maps"].append(map_number)
+        server_command_state["running"] = True
 
         role = f"<@&492494724528340992>"  # @Member role
 
-        await ctx.send(f"Cheching {server_number} status...")
-
-        self.bot_state.state["status"] = True
+        await ctx.send(f"Cheching {map_number} status...")
 
         counter = 0
-        while self.bot_state.get("status"):
+        while server_command_state.get("running") == True:
 
-            if not self.server_data.is_server_down(server_number):
-                await ctx.send(f"{role} {server_number} is up!")
-                print(f"{server_number} status: Online")
-                self.bot_state.state["status"] = False
+            if not self.server_data.is_server_down(map_number):
+                await ctx.send(f"{role} {map_number} is up!")
+                server_command_state["maps"].remove(map_number)
+                server_command_state["running"] = False
+                print(f"{map_number} status: Online")
                 break
 
             # Server is still down
             counter += 1
-            print(f"{server_number} status: Down - {counter}")
-            await asyncio.sleep(settings.status_interval)
-
-        self.server_searching[discord_server_id].remove(server_number)
-        self.bot_state.state["status"] = False
+            print(f"{map_number} status: Down - {counter}")
+            await asyncio.sleep(settings.status_sleep_interval)
