@@ -16,7 +16,7 @@ class ServerScanner(commands.Cog):
         self.bot_state = bot_state
 
         # Key: discord server id, Value: list of Ark server numbers
-        self.running_status_in_servers = {}
+        self.server_searching = {}
         self.running_autpop_in_servers = set()
 
     @commands.command()
@@ -35,15 +35,17 @@ class ServerScanner(commands.Cog):
         if not await validate_server_number(ctx, server_number):
             return
 
-        server_id = ctx.guild.id
-        if server_number in self.running_status_in_servers.get(server_id):
+        # Gives the discord server id where the command was called
+        discord_server_id = ctx.guild.id
+        if server_number in self.server_searching.get(discord_server_id):
             await ctx.send(f"I'm already looking for {server_number} status, wait :rage: ")
             return
 
-        if server_id not in self.running_status_in_servers:
-            self.running_status_in_servers[server_id] = [server_number]
+        if discord_server_id not in self.server_searching:
+            self.server_searching[discord_server_id] = [server_number]
         else:
-            self.running_status_in_servers[server_id].append(server_number)
+            # The command is already running in the discord server, just add the server number to the list
+            self.server_searching[discord_server_id].append(server_number)
 
         role = f"<@&492494724528340992>"  # @Member role
 
@@ -65,4 +67,5 @@ class ServerScanner(commands.Cog):
             print(f"{server_number} status: Down - {counter}")
             await asyncio.sleep(settings.status_interval)
 
-        self.running_status_in_servers[server_id].remove(server_number)
+        self.server_searching[discord_server_id].remove(server_number)
+        self.bot_state.state["status"] = False
