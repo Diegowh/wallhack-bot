@@ -1,8 +1,7 @@
-# Wallhack-Bot
+# WALLHACK-BOT
 
 ## ARK: Survival Ascended Discord Bot
 
-  
 ### Bot Commands
 
 1. **/pop** {_server_number_}
@@ -16,3 +15,7 @@
 3. **/status** {_server_number_}
     * Description: Checks for the status of the given server. Tags @Member when the server is online.
     * _server_number_: **REQUIRED** 4 digits number. Example: "/status 2154"
+
+### About the bot
+
+> This is a personal Bot for managing my ARK: Survival Ascended server. It's currently not a complete service. Feel free to message me if you have similar needs or want to collaborate.
