@@ -1,5 +1,6 @@
-async def validate_server_number(ctx, number: int) -> bool:
-    if not isinstance(number, int):
-        await ctx.send("Server number must be a four digit number.")
-        return False
-    return True
+async def validate_map_number(ctx, number) -> bool:
+    if number.isdigit() and len(str(number)) == 4:
+        return True
+
+    await ctx.send("Map number must be a four digit number.")
+    return False
