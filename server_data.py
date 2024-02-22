@@ -20,9 +20,16 @@ class ServerData:
         server = self._find_server(map_number)
 
         if server is None:
-            return "Server not found"
+            time_now = f"<t:{int(time.time())}>"
 
-        # Build the message
+            error_msg = discord.Embed(title="Server not found", color=0xff0000)
+            error_msg.add_field(
+                name="Maybe it's down or the map number is wrong.")
+            error_msg.add_field(name="Last update",
+                                value=time_now, inline=True)
+            return error_msg
+
+        # Server found, create the embed message
         pop_msg = self._pop_message()
         return pop_msg
 
