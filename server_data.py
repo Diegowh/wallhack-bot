@@ -1,5 +1,6 @@
 import requests
 import discord
+from utils import validate_map_number
 
 
 class ServerData:
@@ -14,8 +15,8 @@ class ServerData:
         assert isinstance(response, list)
         return response
 
-    def pop(self, server_number: int) -> discord.Embed:
-        server = self._find_server(server_number)
+    def pop(self, map_number) -> discord.Embed:
+        server = self._find_server(map_number)
 
         if server is None:
             return "Server not found"
@@ -36,18 +37,18 @@ class ServerData:
                         )
         return embed
 
-    def is_server_down(self, server_number) -> bool:
-        server = self._find_server(server_number)
+    def is_server_down(self, map_number) -> bool:
+        server = self._find_server(map_number)
         return server is None
 
-    def _find_server(self, server_number: int) -> dict:
+    def _find_server(self, map_number) -> dict:
 
-        assert isinstance(server_number, int)
+        assert validate_map_number(map_number)
 
         server_list = self.get()
 
         for server in server_list:
-            if str(server_number) in server.get("Name", ""):
+            if map_number in server.get("Name"):
                 self.server_data = server
                 self.name = server.get("Name")
                 return server
