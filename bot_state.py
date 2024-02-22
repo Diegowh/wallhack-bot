@@ -15,7 +15,10 @@ class BotState:
             self.state[guild.id] = {}
             for cog in self.bot.cogs.values():
                 for command in cog.get_commands():
-                    self.state[guild.id][command.name] = False
+                    self.state[guild.id][command.name] = {
+                        "running": False,
+                        "maps": [],
+                    }
                     print(f"Command {command.name} synced in guild {
                           guild.id}."
                           )
