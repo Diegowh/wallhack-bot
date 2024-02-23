@@ -1,11 +1,11 @@
 import asyncio
+import time
 
 from discord.ext import commands
 
 from server_data import ServerData
 from bot_state import BotState
 import settings as settings
-from utils import is_valid_map_number
 
 
 class ServerScanner(commands.Cog):
@@ -41,10 +41,30 @@ class ServerScanner(commands.Cog):
 
         await ctx.send(f"Cheching {map_number} status...")
 
+        # Check when command is called if the server is still up
+        if not await self.server_data.is_server_down(map_number):
+            start_time = time.time()
+            while time.time() - start_time < settings.status_timeout:
+                await asyncio.sleep(settings.status_sleep_interval)
+                if await self.server_data.is_server_down(map_number):
+                    break
+
+            else:
+                # Server is still up after the timeout
+                await ctx.send(f"{map_number} is still up, please try again.")
+                server_command_state["maps"].remove(map_number)
+                server_command_state["running"] = False
+                return
+
+        # previous_server_state = "down" if await self.server_data.is_server_down(map_number) else "up"
         counter = 0
+
         while server_command_state.get("running") == True:
 
             if not await self.server_data.is_server_down(map_number):
+
+                # Server is still up (maybe wrong command use or the server is still showing)
+
                 await ctx.send(f"{settings.role_to_tag} {map_number} is up!")
                 server_command_state["maps"].remove(map_number)
                 server_command_state["running"] = False
