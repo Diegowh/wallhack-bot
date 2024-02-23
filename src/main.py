@@ -6,6 +6,7 @@ from discord.ext import commands
 
 from bot_state import BotState
 from cogs.server_scanner import ServerScanner
+import settings as settings
 
 load_dotenv()
 BOT_TOKEN = os.getenv("BOT_TOKEN")

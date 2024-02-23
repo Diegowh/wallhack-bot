@@ -10,7 +10,7 @@ import settings as settings
 
 class ServerScanner(commands.Cog):
 
-    def __init__(self, bot, bot_state: BotState):
+    def __init__(self, bot: commands.Bot, bot_state: BotState):
         self.bot = bot
         self.server_data = ServerData()
         self.bot_state = bot_state
@@ -85,6 +85,13 @@ class ServerScanner(commands.Cog):
 
         if arg.lower() == "on":
 
+            channel = self.bot.get_channel(settings.autopop_channel_id)
+
+            # Get last msg in the channel sent by the bot to delete it.
+            async for message in channel.history(limit=100):
+                if message.id != settings.autopop_to_preserve_msg_id:
+                    await message.delete()
+
             # Check if there is another instance of the command running
             if server_command_state["running"]:
                 await ctx.send("I'm already running :rage: ")
@@ -110,8 +117,21 @@ class ServerScanner(commands.Cog):
         elif arg.lower() == "off":
 
             if server_command_state["running"]:
-                server_command_state["running"] = False
-                await ctx.send("Autopop off!")
+
+                # Delete the last message sent by the bot
+                channel = self.bot.get_channel(id=settings.autopop_channel_id)
+
+                # Get last msg in the channel sent by the bot to delete it.
+                bot_msg = None
+                async for message in channel.history(limit=10):
+                    if message.author == self.bot.user:
+                        bot_msg = message
+                        break
+                if bot_msg:
+                    await bot_msg.delete()
+
+                    server_command_state["running"] = False
+                    await ctx.send("Autopop off!")
 
         else:
             await ctx.send("Invalid argument. Use /help for more information.")
