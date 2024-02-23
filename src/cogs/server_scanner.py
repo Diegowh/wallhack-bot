@@ -46,15 +46,13 @@ class ServerScanner(commands.Cog):
         server_command_state["maps"].append(map_number)
         server_command_state["running"] = True
 
-        role = f"<@&492494724528340992>"  # @Member role
-
         await ctx.send(f"Cheching {map_number} status...")
 
         counter = 0
         while server_command_state.get("running") == True:
 
             if not await self.server_data.is_server_down(map_number):
-                await ctx.send(f"{role} {map_number} is up!")
+                await ctx.send(f"{settings.role_to_tag} {map_number} is up!")
                 server_command_state["maps"].remove(map_number)
                 server_command_state["running"] = False
                 print(f"{map_number} status: Online")
