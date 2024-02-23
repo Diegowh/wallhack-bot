@@ -18,10 +18,6 @@ class ServerScanner(commands.Cog):
     @commands.command(name="pop")
     async def pop(self, ctx, map_number):
 
-        # if not await is_valid_map_number(map_number):
-        #     await ctx.send("Map number must be a four digit number.")
-        #     return
-
         pop_msg = await self.server_data.pop(map_number)
 
         await ctx.send(embed=pop_msg)
@@ -29,9 +25,6 @@ class ServerScanner(commands.Cog):
     @commands.command(name="status")
     async def status(self, ctx, map_number):
         command_name = "status"
-        # if not await is_valid_map_number(map_number):
-        #     await ctx.send("Map number must be a four digit number.")
-        #     return
 
         # Gives the discord server id where the command was called
         discord_server_id = ctx.guild.id
