@@ -3,9 +3,10 @@ import time
 
 from discord.ext import commands
 
+import settings as settings
 from server_data import ServerData
 from bot_state import BotState
-import settings as settings
+from utils import CommandName
 
 
 class ServerScanner(commands.Cog):
@@ -15,16 +16,16 @@ class ServerScanner(commands.Cog):
         self.server_data = ServerData()
         self.bot_state = bot_state
 
-    @commands.command(name="pop")
-    async def pop(self, ctx, map_number):
+    @commands.command(name=CommandName.POP)
+    async def pop(self, ctx: commands.Context, map_number):
 
         pop_msg = await self.server_data.pop(map_number)
 
         await ctx.send(embed=pop_msg)
 
-    @commands.command(name="status")
-    async def status(self, ctx, map_number):
-        command_name = "status"
+    @commands.command(name=CommandName.STATUS)
+    async def status(self, ctx: commands.Context, map_number):
+        command_name = ctx.command.name
 
         # Gives the discord server id where the command was called
         discord_server_id = ctx.guild.id
@@ -76,7 +77,7 @@ class ServerScanner(commands.Cog):
             print(f"{map_number} status: Down - {counter}")
             await asyncio.sleep(settings.status_sleep_interval)
 
-    @commands.command(name="autopop")
+    @commands.command(name=CommandName.AUTOPOP)
     async def autopop(self, ctx: commands.Context, arg: str):
         command_name = ctx.command.name
         discord_server_id = ctx.guild.id
