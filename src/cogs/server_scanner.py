@@ -77,61 +77,67 @@ class ServerScanner(commands.Cog):
             await asyncio.sleep(settings.status_sleep_interval)
 
     @commands.command(name="autopop")
-    async def autopop(self, ctx, arg: str):
-        command_name = "autopop"
-        # TODO: For now, the bot will only use this command for the server 2154. This will be changed in the future if needed.
+    async def autopop(self, ctx: commands.Context, arg: str):
+        command_name = ctx.command.name
         discord_server_id = ctx.guild.id
         server_command_state: dict = self.bot_state.state[discord_server_id][command_name]
 
         if arg.lower() == "on":
-
-            channel = self.bot.get_channel(settings.autopop_channel_id)
-
-            # Get last msg in the channel sent by the bot to delete it.
-            async for message in channel.history(limit=100):
-                if message.id != settings.autopop_to_preserve_msg_id:
-                    await message.delete()
-
-            # Check if there is another instance of the command running
-            if server_command_state["running"]:
-                await ctx.send("I'm already running :rage: ")
-                return
-
-            server_command_state["running"] = True
-            last_msg = None  # This will be used to avoid spamming
-            while server_command_state["running"]:
-
-                pop_message = await self.server_data.pop(settings.autopop_main_map)
-
-                if last_msg is not None:
-                    await last_msg.edit(embed=pop_message)
-                else:
-                    last_msg = await ctx.send(embed=pop_message)
-
-                # I use this method to allow the bot to be stopped while it's running because. I have to change the way this works.
-                for _ in range(settings.autopop_sleep_interval):
-                    await asyncio.sleep(1)
-                    if not server_command_state["running"]:
-                        break
+            await self.run_autopop(ctx, server_command_state)
 
         elif arg.lower() == "off":
-
-            if server_command_state["running"]:
-
-                # Delete the last message sent by the bot
-                channel = self.bot.get_channel(id=settings.autopop_channel_id)
-
-                # Get last msg in the channel sent by the bot to delete it.
-                bot_msg = None
-                async for message in channel.history(limit=10):
-                    if message.author == self.bot.user:
-                        bot_msg = message
-                        break
-                if bot_msg:
-                    await bot_msg.delete()
-
-                    server_command_state["running"] = False
-                    await ctx.send("Autopop off!")
+            await self.stop_autopop(ctx, server_command_state)
 
         else:
             await ctx.send("Invalid argument. Use /help for more information.")
+
+    # Methods
+
+    async def run_autopop(self, ctx: commands.Context, state: bool):
+
+        channel = self.bot.get_channel(settings.autopop_channel_id)
+
+        # Get last msg in the channel sent by the bot to delete it.
+        async for message in channel.history(limit=100):
+            if message.id != settings.autopop_to_preserve_msg_id:
+                await message.delete()
+
+        # Check if there is another instance of the command running
+        if state["running"]:
+            await ctx.send("I'm already running :rage: ")
+            return
+
+        state["running"] = True
+        last_msg = None  # This will be used to avoid spamming
+        while state["running"]:
+
+            pop_message = await self.server_data.pop(settings.autopop_main_map)
+
+            if last_msg is not None:
+                await last_msg.edit(embed=pop_message)
+            else:
+                last_msg = await ctx.send(embed=pop_message)
+
+            # I use this method to allow the bot to be stopped while it's running because. I have to change the way this works.
+            for _ in range(settings.autopop_sleep_interval):
+                await asyncio.sleep(1)
+                if not state["running"]:
+                    break
+
+    async def stop_autopop(self, ctx: commands.Context, state: bool):
+
+        if state["running"]:
+            # Delete the last message sent by the bot
+            channel = self.bot.get_channel(id=settings.autopop_channel_id)
+
+            # Get last msg in the channel sent by the bot to delete it.
+            bot_msg = None
+            async for message in channel.history(limit=10):
+                if message.author == self.bot.user:
+                    bot_msg = message
+                    break
+            if bot_msg:
+                await bot_msg.delete()
+
+                state["running"] = False
+                await ctx.send("Autopop off!")
