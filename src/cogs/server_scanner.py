@@ -99,9 +99,7 @@ class ServerScanner(commands.Cog):
         channel = self.bot.get_channel(settings.autopop_channel_id)
 
         # Get last msg in the channel sent by the bot to delete it.
-        async for message in channel.history(limit=100):
-            if message.id != settings.autopop_to_preserve_msg_id:
-                await message.delete()
+        await self.delete_previous_messages(channel=channel, limit=100)
 
         # Check if there is another instance of the command running
         if state["running"]:
@@ -142,3 +140,8 @@ class ServerScanner(commands.Cog):
 
                 state["running"] = False
                 await ctx.send("Autopop off!")
+
+    async def delete_previous_messages(self, channel, limit):
+        async for message in channel.history(limit=limit):
+            if message.id != settings.autopop_to_preserve_msg_id:
+                await message.delete()
