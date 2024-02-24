@@ -94,7 +94,7 @@ class ServerScanner(commands.Cog):
 
     # Methods
 
-    async def run_autopop(self, ctx: commands.Context, state: bool):
+    async def run_autopop(self, ctx: commands.Context, state: dict):
 
         channel = self.bot.get_channel(settings.autopop_channel_id)
 
@@ -107,7 +107,8 @@ class ServerScanner(commands.Cog):
             return
 
         state["running"] = True
-        last_msg = None  # This will be used to avoid spamming
+
+        last_msg = None  # Im using this just to avoid spamming the channel
         while state["running"]:
 
             pop_message = await self.server_data.pop(settings.autopop_main_map)
@@ -117,11 +118,11 @@ class ServerScanner(commands.Cog):
             else:
                 last_msg = await ctx.send(embed=pop_message)
 
-            # I use this method to allow the bot to be stopped while it's running because. I have to change the way this works.
-            for _ in range(settings.autopop_sleep_interval):
-                await asyncio.sleep(1)
-                if not state["running"]:
-                    break
+            done, pending = await asyncio.wait(
+                [asyncio.sleep(settings.autopop_sleep_interval), self.check_state(state)], return_when=asyncio.FIRST_COMPLETED
+            )
+            if self.check_state in done:
+                break
 
     async def stop_autopop(self, ctx: commands.Context, state: bool):
 
@@ -145,3 +146,7 @@ class ServerScanner(commands.Cog):
         async for message in channel.history(limit=limit):
             if message.id != settings.autopop_to_preserve_msg_id:
                 await message.delete()
+
+    async def check_state(state):
+        while state["running"]:
+            await asyncio.sleep(1)
