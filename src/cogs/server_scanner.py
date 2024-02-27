@@ -6,7 +6,7 @@ from discord.ext import commands
 import settings as settings
 from server_data import ServerData
 from bot_state import BotState
-from utils import CommandName
+from utils import CommandName, AutopopArg
 
 
 class ServerScanner(commands.Cog):
@@ -83,10 +83,10 @@ class ServerScanner(commands.Cog):
         discord_server_id = ctx.guild.id
         server_command_state: dict = self.bot_state.state[discord_server_id][command_name]
 
-        if arg.lower() == "on":
+        if arg.lower() == AutopopArg.ON:
             await self.run_autopop(ctx, server_command_state)
 
-        elif arg.lower() == "off":
+        elif arg.lower() == AutopopArg.OFF:
             await self.stop_autopop(ctx, server_command_state)
 
         else:
