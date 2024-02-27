@@ -43,19 +43,7 @@ class ServerScanner(commands.Cog):
         await ctx.send(f"Cheching {map_number} status...")
 
         # Check when command is called if the server is still up
-        if not await self.server_data.is_server_down(map_number):
-            start_time = time.time()
-            while time.time() - start_time < settings.status_timeout:
-                await asyncio.sleep(settings.status_sleep_interval)
-                if await self.server_data.is_server_down(map_number):
-                    break
-
-            else:
-                # Server is still up after the timeout
-                await ctx.send(f"{map_number} is still up, please try again.")
-                server_command_state["maps"].remove(map_number)
-                server_command_state["running"] = False
-                return
+        await self.wait_for_server_down(ctx, map_number, server_command_state)
 
         # previous_server_state = "down" if await self.server_data.is_server_down(map_number) else "up"
         counter = 0
@@ -126,8 +114,8 @@ class ServerScanner(commands.Cog):
     async def stop_autopop(self, ctx: commands.Context, state: bool):
 
         if state["running"]:
+            
             # Delete the last message sent by the bot
-
             await self.delete_previous_messages(ctx, limit=100)
 
             self.autopop_task.cancel()
@@ -138,3 +126,19 @@ class ServerScanner(commands.Cog):
         async for message in ctx.channel.history(limit=limit):
             if message.id != settings.autopop_to_preserve_msg_id:
                 await message.delete()
+
+    async def wait_for_server_down(self, ctx: commands.Context, map_number, server_command_state: dict):
+        
+        if not await self.server_data.is_server_down(map_number):
+            start_time = time.time()
+            while time.time() - start_time < settings.status_timeout:
+                await asyncio.sleep(settings.status_sleep_interval)
+                if await self.server_data.is_server_down(map_number):
+                    break
+
+            else:
+                # Server is still up after the timeout
+                await ctx.send(f"{map_number} is still up, please try again.")
+                server_command_state["maps"].remove(map_number)
+                server_command_state["running"] = False
+                return
