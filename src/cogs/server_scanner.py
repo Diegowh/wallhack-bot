@@ -93,7 +93,6 @@ class ServerScanner(commands.Cog):
             await ctx.send("Invalid argument. Use /help for more information.")
 
     # Methods
-
     async def run_autopop(self, ctx: commands.Context, state: dict):
 
         # Check if there is another instance of the command running
@@ -104,7 +103,7 @@ class ServerScanner(commands.Cog):
         state["running"] = True
 
         # Get last msg in the channel sent by the bot to delete it.
-        await self.delete_previous_messages(limit=100)
+        await self.delete_previous_messages(ctx, limit=100)
 
         # Run the task
         self.autopop_task = asyncio.create_task(
@@ -129,14 +128,13 @@ class ServerScanner(commands.Cog):
         if state["running"]:
             # Delete the last message sent by the bot
 
-            await self.delete_previous_messages(limit=100)
+            await self.delete_previous_messages(ctx, limit=100)
 
             self.autopop_task.cancel()
             state["running"] = False
             await ctx.send("Autopop off!")
 
-    async def delete_previous_messages(self, limit):
-        channel = self.bot.get_channel(settings.autopop_channel_id)
-        async for message in channel.history(limit=limit):
+    async def delete_previous_messages(self, ctx: commands.Context, limit):
+        async for message in ctx.channel.history(limit=limit):
             if message.id != settings.autopop_to_preserve_msg_id:
                 await message.delete()
