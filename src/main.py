@@ -7,10 +7,10 @@ from discord.ext import commands
 from bot_state import BotState
 from cogs.server_scanner import ServerScanner
 import settings as settings
+from utils import BotTokenName
 
 load_dotenv()
-# TODO: Change the way to select between dev and production tokens
-BOT_TOKEN = os.getenv("BOT_TOKEN")
+BOT_TOKEN = os.getenv(BotTokenName.DEVELOPMENT)
 
 # Discord intents setup
 intents = discord.Intents.default()
