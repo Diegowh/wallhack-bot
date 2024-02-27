@@ -16,8 +16,8 @@ class CommandName(StrEnum):
                 return member
         return None
 
-class TokenName(StrEnum):
-    DEPLOYMENT = "DEPLOYMENT_BOT_TOKEN"
+class BotTokenName(StrEnum):
+    PRODUCTION = "PRODUCTION_BOT_TOKEN"
     DEVELOPMENT = "DEVELOPMENT_BOT_TOKEN"
 
     @classmethod
