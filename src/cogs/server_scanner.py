@@ -140,7 +140,3 @@ class ServerScanner(commands.Cog):
         async for message in channel.history(limit=limit):
             if message.id != settings.autopop_to_preserve_msg_id:
                 await message.delete()
-
-    async def check_state(state):
-        while state["running"]:
-            await asyncio.sleep(1)
