@@ -9,6 +9,7 @@ from cogs.server_scanner import ServerScanner
 import settings as settings
 
 load_dotenv()
+# TODO: Change the way to select between dev and production tokens
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 
 # Discord intents setup

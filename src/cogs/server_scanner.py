@@ -96,11 +96,6 @@ class ServerScanner(commands.Cog):
 
     async def run_autopop(self, ctx: commands.Context, state: dict):
 
-        channel = self.bot.get_channel(settings.autopop_channel_id)
-
-        # Get last msg in the channel sent by the bot to delete it.
-        await self.delete_previous_messages(channel=channel, limit=100)
-
         # Check if there is another instance of the command running
         if state["running"]:
             await ctx.send("I'm already running :rage: ")
@@ -108,6 +103,15 @@ class ServerScanner(commands.Cog):
 
         state["running"] = True
 
+        # Get last msg in the channel sent by the bot to delete it.
+        await self.delete_previous_messages(limit=100)
+
+        # Run the task
+        self.autopop_task = asyncio.create_task(
+            self.__autopop_task(ctx, state)
+        )
+
+    async def __autopop_task(self, ctx: commands.Context, state: dict):
         last_msg = None  # Im using this just to avoid spamming the channel
         while state["running"]:
 
@@ -118,31 +122,21 @@ class ServerScanner(commands.Cog):
             else:
                 last_msg = await ctx.send(embed=pop_message)
 
-            done, pending = await asyncio.wait(
-                [asyncio.sleep(settings.autopop_sleep_interval), self.check_state(state)], return_when=asyncio.FIRST_COMPLETED
-            )
-            if self.check_state in done:
-                break
+            await asyncio.sleep(settings.autopop_sleep_interval)
 
     async def stop_autopop(self, ctx: commands.Context, state: bool):
 
         if state["running"]:
             # Delete the last message sent by the bot
-            channel = self.bot.get_channel(id=settings.autopop_channel_id)
 
-            # Get last msg in the channel sent by the bot to delete it.
-            bot_msg = None
-            async for message in channel.history(limit=10):
-                if message.author == self.bot.user:
-                    bot_msg = message
-                    break
-            if bot_msg:
-                await bot_msg.delete()
+            await self.delete_previous_messages(limit=100)
 
-                state["running"] = False
-                await ctx.send("Autopop off!")
+            self.autopop_task.cancel()
+            state["running"] = False
+            await ctx.send("Autopop off!")
 
-    async def delete_previous_messages(self, channel, limit):
+    async def delete_previous_messages(self, limit):
+        channel = self.bot.get_channel(settings.autopop_channel_id)
         async for message in channel.history(limit=limit):
             if message.id != settings.autopop_to_preserve_msg_id:
                 await message.delete()
