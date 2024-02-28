@@ -19,6 +19,4 @@ class BotState:
                         "running": False,
                         "maps": [],
                     }
-                    print(f"Command {command.name} synced in guild {
-                          guild.id}."
-                          )
+                    print(f"Command {command.name} synced in guild {guild.id}.")
