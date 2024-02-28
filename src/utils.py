@@ -1,6 +1,12 @@
 from enum import StrEnum
-from typing import Any
+from typing import Any, Union
 
+def _validate_strenum_value(value: str):
+    """Raises TypeError if value is not a string
+    """
+    if not isinstance(value, str):
+        raise TypeError(f"Expected string, got {type(value).__name__}")
+    
 
 class CommandName(StrEnum):
     AUTOPOP = "autopop"
@@ -9,7 +15,8 @@ class CommandName(StrEnum):
     HELP = "help"
 
     @classmethod
-    def _missing_(cls, value) -> Any:
+    def _missing_(cls, value: str) -> Any:
+        _validate_strenum_value(value)
         value = value.lower()
         for member in cls:
             if member == value:
@@ -22,6 +29,7 @@ class BotTokenName(StrEnum):
 
     @classmethod
     def _missing_(cls, value) -> Any:
+        _validate_strenum_value(value)
         value = value.upper()
         for member in cls:
             if member == value:
@@ -34,13 +42,22 @@ class AutopopArg(StrEnum):
     
     @classmethod
     def _missing_(cls, value) -> Any:
+        _validate_strenum_value(value)
         value = value.lower()
         for member in cls:
             if member == value:
                 return member
         return None
 
-async def is_valid_map_number(number) -> bool:
-    if number.isdigit() and len(str(number)) == 4:
-        return True
+# def is_valid_map_number(number: Union[str, int]) -> bool:
+#     number = str(number)
+#     if number.isdigit() and len(number) == 4:
+#         return True
+#     return False
+
+def is_valid_map_number(number: Union[str, int]) -> bool:
+    if isinstance(number, (str, int)):
+        number = str(number)
+        if number.isdigit() and len(number) == 4:
+            return True
     return False
