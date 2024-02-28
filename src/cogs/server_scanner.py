@@ -114,10 +114,7 @@ class ServerScanner(commands.Cog):
     async def stop_autopop(self, ctx: commands.Context, state: bool):
 
         if state["running"]:
-            
-            # Delete the last message sent by the bot
             await self.delete_previous_messages(ctx, limit=100)
-
             self.autopop_task.cancel()
             state["running"] = False
             await ctx.send("Autopop off!")
