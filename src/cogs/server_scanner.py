@@ -23,13 +23,32 @@ class ServerScanner(commands.Cog):
 
         await ctx.send(embed=pop_msg)
 
-    @commands.command(name=CommandName.STATUS)
-    async def status(self, ctx: commands.Context, map_number):
-        command_name = ctx.command.name
 
+    def __get_server_command_state(self, ctx: commands.Context) -> dict:
+        command_name = ctx.command.name
         # Gives the discord server id where the command was called
         discord_server_id = ctx.guild.id
-        server_command_state: dict = self.bot_state.state[discord_server_id][command_name]
+        return self.bot_state.state[discord_server_id][command_name]
+    
+    async def __run_status_task(self, ctx: commands.Context, map_number, server_command_state: dict):
+        while server_command_state.get("running") == True:
+        
+            if not await self.server_data.is_server_down(map_number):
+
+                # Server is still up (maybe wrong command use or the server is still showing)
+
+                await ctx.send(f"{settings.role_to_tag} {map_number} is up!")
+                server_command_state["maps"].remove(map_number)
+                server_command_state["running"] = False
+                print(f"{map_number} status: Online")
+                break
+
+            # Server is still down
+            await asyncio.sleep(settings.status_sleep_interval)
+    
+    @commands.command(name=CommandName.STATUS)
+    async def status(self, ctx: commands.Context, map_number):
+        server_command_state = self.__get_server_command_state(ctx)
 
         # Check if the bot is already looking for the requested ARK server status
         if map_number in server_command_state.get("maps"):
@@ -43,27 +62,11 @@ class ServerScanner(commands.Cog):
         await ctx.send(f"Cheching {map_number} status...")
 
         # Check when command is called if the server is still up
-        await self.wait_for_server_down(ctx, map_number, server_command_state)
+        await self.__wait_for_server_down(ctx, map_number, server_command_state)
 
         # previous_server_state = "down" if await self.server_data.is_server_down(map_number) else "up"
-        counter = 0
-
-        while server_command_state.get("running") == True:
-
-            if not await self.server_data.is_server_down(map_number):
-
-                # Server is still up (maybe wrong command use or the server is still showing)
-
-                await ctx.send(f"{settings.role_to_tag} {map_number} is up!")
-                server_command_state["maps"].remove(map_number)
-                server_command_state["running"] = False
-                print(f"{map_number} status: Online")
-                break
-
-            # Server is still down
-            counter += 1
-            print(f"{map_number} status: Down - {counter}")
-            await asyncio.sleep(settings.status_sleep_interval)
+        
+        await self.__run_status_task(ctx, map_number, server_command_state)
 
     @commands.command(name=CommandName.AUTOPOP)
     async def autopop(self, ctx: commands.Context, arg: str):
@@ -124,7 +127,7 @@ class ServerScanner(commands.Cog):
             if message.id != settings.autopop_to_preserve_msg_id:
                 await message.delete()
 
-    async def wait_for_server_down(self, ctx: commands.Context, map_number, server_command_state: dict):
+    async def __wait_for_server_down(self, ctx: commands.Context, map_number, server_command_state: dict):
         
         if not await self.server_data.is_server_down(map_number):
             start_time = time.time()
