@@ -19,7 +19,7 @@ class ServerData:
         return response
 
     async def pop(self, map_number) -> discord.Embed:
-        if not await is_valid_map_number(map_number):
+        if not is_valid_map_number(map_number):
             time_now = f"<t:{int(time.time())}>"
             invalid_num_msg = discord.Embed(title="Invalid map number", color=0xff0000, description="Map number must be a four digit number.")
             invalid_num_msg.add_field(name="Last update", value=time_now, inline=True)
@@ -56,7 +56,7 @@ class ServerData:
 
     async def _find_server(self, map_number) -> dict:
 
-        assert await is_valid_map_number(map_number)
+        assert is_valid_map_number(map_number)
 
         server_list = self.get()
 
