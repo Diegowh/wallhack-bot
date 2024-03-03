@@ -61,3 +61,12 @@ def is_valid_map_number(number: Union[str, int]) -> bool:
         if number.isdigit() and len(number) == 4:
             return True
     return False
+
+MENTION_RESPONSES = [
+    "who?",
+    "stfu retard",
+    "kys",
+    "didn't ask",
+    "idc",
+    "802 was better"
+]

@@ -6,6 +6,7 @@ from discord.ext import commands
 
 from bot_state import BotState
 from cogs.server_scanner import ServerScanner
+from cogs.auto_interactions import AutoInteractions
 import settings as settings
 from utils import BotTokenName
 
@@ -27,6 +28,7 @@ async def on_ready():
     Its called when the bot is connected to Discord. Its used to sync the commands and for debugging purposes.
     """
     await bot.add_cog(ServerScanner(bot=bot, bot_state=bot_state))
+    await bot.add_cog(AutoInteractions(bot=bot))
     print(f'{bot.user} has connected to Discord!')
     try:
         synced = await bot.tree.sync()
