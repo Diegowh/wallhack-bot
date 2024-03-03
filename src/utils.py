@@ -68,5 +68,7 @@ MENTION_RESPONSES = [
     "kys",
     "didn't ask",
     "idc",
-    "802 was better"
+    "802 was better",
+    "Cómo?",
+    "Gracias"
 ]
