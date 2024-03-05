@@ -14,5 +14,5 @@ class AutoInteractions(commands.Cog):
             await message.channel.send(f'{message.author.mention} {response}')
 
 
-def setup(bot: commands.Bot):
-    bot.add_cog(AutoInteractions(bot))
+async def setup(bot: commands.Bot):
+    await bot.add_cog(AutoInteractions(bot))
