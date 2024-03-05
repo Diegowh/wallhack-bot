@@ -9,6 +9,7 @@ class BotState:
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.state = {}
+        self.sync()
 
     def sync(self):
         for guild in self.bot.guilds:
