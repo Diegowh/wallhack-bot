@@ -9,8 +9,10 @@ class BotState:
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.state = {}
-        self.sync()
 
+    def __str__(self):
+        return f"BotState: {self.state}"
+    
     def sync(self):
         for guild in self.bot.guilds:
             self.state[guild.id] = {}
@@ -21,3 +23,4 @@ class BotState:
                         "maps": [],
                     }
                     print(f"Command {command.name} synced in guild {guild.id}.")
+

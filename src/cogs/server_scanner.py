@@ -11,10 +11,9 @@ from utils import CommandName, AutopopArg
 
 class ServerScanner(commands.Cog):
 
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
         self.server_data = ServerData()
-        self.bot_state = BotState(self.bot)
 
     @commands.command(name=CommandName.POP)
     async def pop(self, ctx: commands.Context, map_number):
@@ -28,7 +27,7 @@ class ServerScanner(commands.Cog):
         command_name = ctx.command.name
         # Gives the discord server id where the command was called
         discord_server_id = ctx.guild.id
-        return self.bot_state.state[discord_server_id][command_name]
+        return self.bot.state.state[discord_server_id][command_name]
     
     async def __run_status_task(self, ctx: commands.Context, map_number, server_command_state: dict):
         while server_command_state.get("running") == True:
@@ -72,7 +71,7 @@ class ServerScanner(commands.Cog):
     async def autopop(self, ctx: commands.Context, arg: str):
         command_name = ctx.command.name
         discord_server_id = ctx.guild.id
-        server_command_state: dict = self.bot_state.state[discord_server_id][command_name]
+        server_command_state: dict = self.bot.state.state[discord_server_id][command_name]
 
         if arg.lower() == AutopopArg.ON:
             await self.run_autopop(ctx, server_command_state)
@@ -149,5 +148,5 @@ class ServerScanner(commands.Cog):
         else:
             raise error
 
-def setup(bot: commands.Bot):
-    bot.add_cog(ServerScanner(bot))
+async def setup(bot: commands.Bot):
+    await bot.add_cog(ServerScanner(bot))
