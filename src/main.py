@@ -43,12 +43,5 @@ async def on_ready():
         print(e)
 
 
-@bot.event
-async def on_command_error(ctx, error):
-    if isinstance(error, commands.MissingRequiredArgument):
-        await ctx.send("You need to provide a map number.")
-    else:
-        raise error
-
 if __name__ == "__main__":
     bot.run(BOT_TOKEN)

@@ -142,3 +142,9 @@ class ServerScanner(commands.Cog):
                 server_command_state["maps"].remove(map_number)
                 server_command_state["running"] = False
                 return
+    
+    async def cog_command_error(self, ctx: commands.Context, error: Exception) -> None:
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send("You need to provide a map number.")
+        else:
+            raise error
