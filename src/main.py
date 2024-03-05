@@ -5,8 +5,8 @@ import discord
 from discord.ext import commands
 
 from bot_state import BotState
-from cogs.server_scanner import ServerScanner
-from cogs.auto_interactions import AutoInteractions
+from Cogs.server_scanner import ServerScanner
+from Cogs.auto_interactions import AutoInteractions
 import settings as settings
 from utils import BotTokenName
 
