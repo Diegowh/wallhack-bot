@@ -11,10 +11,10 @@ from utils import CommandName, AutopopArg
 
 class ServerScanner(commands.Cog):
 
-    def __init__(self, bot: commands.Bot, bot_state: BotState):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.server_data = ServerData()
-        self.bot_state = bot_state
+        self.bot_state = BotState(self.bot)
 
     @commands.command(name=CommandName.POP)
     async def pop(self, ctx: commands.Context, map_number):
