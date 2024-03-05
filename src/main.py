@@ -10,12 +10,11 @@ from cogs.auto_interactions import AutoInteractions
 import settings as settings
 from utils import BotTokenName
 
-load_dotenv()
+load_dotenv() # Load .env file.
 BOT_TOKEN = os.getenv(BotTokenName.DEVELOPMENT)
 
 # Discord intents setup
-intents = discord.Intents.default()
-intents.message_content = True
+intents = discord.Intents.all()
 
 # Bot instance
 bot = commands.Bot(command_prefix='/', intents=intents)
