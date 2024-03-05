@@ -3,50 +3,34 @@ import os
 from dotenv import load_dotenv
 import discord
 from discord.ext import commands
-
 from bot_state import BotState
-from cogs.server_scanner import ServerScanner
+import asyncio
 import settings as settings
 from utils import BotTokenName
 
-load_dotenv()
+load_dotenv() # Load .env file.
 BOT_TOKEN = os.getenv(BotTokenName.DEVELOPMENT)
 
-# Discord intents setup
-intents = discord.Intents.default()
-intents.message_content = True
-
-# Bot instance
+intents = discord.Intents.all() # need to enable
 bot = commands.Bot(command_prefix='/', intents=intents)
-bot_state = BotState(bot=bot)
 
 
 @bot.event
 async def on_ready():
-    """
-    Its called when the bot is connected to Discord. Its used to sync the commands and for debugging purposes.
-    """
-    await bot.add_cog(ServerScanner(bot=bot, bot_state=bot_state))
-    print(f'{bot.user} has connected to Discord!')
-    try:
-        synced = await bot.tree.sync()
-        print(f"Synced {len(synced)} commands.")
+    print(f'We have logged in as {bot.user}')
+    await load_extensions()
+    bot.state = BotState(bot)
+    bot.state.sync()
 
-        bot_state.sync()
-        print(f'We have logged in as {bot.user}')
-        for command in bot.commands:
-            print(f"Command {command.name} loaded.")
-
-    except Exception as e:
-        print(e)
-
-
-@bot.event
-async def on_command_error(ctx, error):
-    if isinstance(error, commands.MissingRequiredArgument):
-        await ctx.send("You need to provide a map number.")
-    else:
-        raise error
+async def load_extensions():
+    for filename in os.listdir("src/Cogs"):
+        if filename == "__pycache__": pass
+        elif filename.endswith('.py') and not filename in ["__init__.py", "utils.py", "error.py"]:
+            try:
+                await bot.load_extension(f'Cogs.{filename[:-3]}')
+            except Exception as e:
+                print(f'Failed to load extension {filename[:-3]}')
+                print(e)
 
 if __name__ == "__main__":
     bot.run(BOT_TOKEN)
