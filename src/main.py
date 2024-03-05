@@ -9,7 +9,7 @@ import settings as settings
 from utils import BotTokenName
 
 load_dotenv() # Load .env file.
-BOT_TOKEN = os.getenv(BotTokenName.DEVELOPMENT)
+BOT_TOKEN = os.getenv(BotTokenName.PRODUCTION)
 
 intents = discord.Intents.all() # need to enable
 bot = commands.Bot(command_prefix='/', intents=intents)
