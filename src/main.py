@@ -13,33 +13,12 @@ from utils import BotTokenName
 load_dotenv() # Load .env file.
 BOT_TOKEN = os.getenv(BotTokenName.DEVELOPMENT)
 
-# Discord intents setup
-intents = discord.Intents.all()
-
-# Bot instance
+intents = discord.Intents.all() # need to enable
 bot = commands.Bot(command_prefix='/', intents=intents)
-bot_state = BotState(bot=bot)
 
-
-@bot.event
-async def on_ready():
-    """
-    Its called when the bot is connected to Discord. Its used to sync the commands and for debugging purposes.
-    """
-    await bot.add_cog(ServerScanner(bot=bot, bot_state=bot_state))
-    await bot.add_cog(AutoInteractions(bot=bot))
-    print(f'{bot.user} has connected to Discord!')
-    try:
-        synced = await bot.tree.sync()
-        print(f"Synced {len(synced)} commands.")
-
-        bot_state.sync()
-        print(f'We have logged in as {bot.user}')
-        for command in bot.commands:
-            print(f"Command {command.name} loaded.")
-
-    except Exception as e:
-        print(e)
+for filename in os.listdir('./Cogs'):
+    if filename.endswith('.py') and not filename in ["__init__.py", "utils.py", "error.py"]:
+        bot.load_extension(f'Cogs.{filename[:-3]}')
 
 
 if __name__ == "__main__":
