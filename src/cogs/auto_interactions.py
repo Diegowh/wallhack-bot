@@ -12,3 +12,7 @@ class AutoInteractions(commands.Cog):
         if self.bot.user.mentioned_in(message):
             response = random.choice(MENTION_RESPONSES)
             await message.channel.send(f'{message.author.mention} {response}')
+
+
+def setup(bot: commands.Bot):
+    bot.add_cog(AutoInteractions(bot))

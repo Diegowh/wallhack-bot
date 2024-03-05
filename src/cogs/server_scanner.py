@@ -148,3 +148,6 @@ class ServerScanner(commands.Cog):
             await ctx.send("You need to provide a map number.")
         else:
             raise error
+
+def setup(bot: commands.Bot):
+    bot.add_cog(ServerScanner(bot))
