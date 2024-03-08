@@ -14,6 +14,7 @@ class CommandName(StrEnum):
     POP = "pop"
     STATUS = "status"
     HELP = "help"
+    SETTINGS = "settings"
 
     @classmethod
     def _missing_(cls, value: str) -> Any:
