@@ -3,17 +3,24 @@ import time
 
 from discord.ext import commands
 
-import settings as settings
-from server_data import ServerData
-from bot_state import BotState
-from utils import CommandName, AutopopArg
+import src.settings as settings
+from src.server_data import ServerData
+from src.utils import CommandName, AutopopArg
 
 
 class ServerScanner(commands.Cog):
 
+
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
         self.server_data = ServerData()
+        self.autopop_task = None
+
+    @staticmethod
+    async def delete_previous_messages(ctx: commands.Context, limit):
+        async for message in ctx.channel.history(limit=limit):
+            if message.id != settings.autopop_to_preserve_msg_id:
+                await message.delete()
 
     @commands.command(name=CommandName.POP)
     async def pop(self, ctx: commands.Context, map_number):
@@ -22,16 +29,15 @@ class ServerScanner(commands.Cog):
 
         await ctx.send(embed=pop_msg)
 
-
     def __get_server_command_state(self, ctx: commands.Context) -> dict:
         command_name = ctx.command.name
         # Gives the discord server id where the command was called
         discord_server_id = ctx.guild.id
         return self.bot.state.state[discord_server_id][command_name]
-    
+
     async def __run_status_task(self, ctx: commands.Context, map_number, server_command_state: dict):
-        while server_command_state.get("running") == True:
-        
+        while server_command_state.get("running"):
+
             if not await self.server_data.is_server_down(map_number):
 
                 # Server is still up (maybe wrong command use or the server is still showing)
@@ -44,7 +50,7 @@ class ServerScanner(commands.Cog):
 
             # Server is still down
             await asyncio.sleep(settings.status_sleep_interval)
-    
+
     @commands.command(name=CommandName.STATUS)
     async def status(self, ctx: commands.Context, map_number):
         server_command_state = self.__get_server_command_state(ctx)
@@ -58,13 +64,13 @@ class ServerScanner(commands.Cog):
         server_command_state["maps"].append(map_number)
         server_command_state["running"] = True
 
-        await ctx.send(f"Cheching {map_number} status...")
+        await ctx.send(f"Checking {map_number} status...")
 
         # Check when command is called if the server is still up
         await self.__wait_for_server_down(ctx, map_number, server_command_state)
 
         # previous_server_state = "down" if await self.server_data.is_server_down(map_number) else "up"
-        
+
         await self.__run_status_task(ctx, map_number, server_command_state)
 
     @commands.command(name=CommandName.AUTOPOP)
@@ -81,8 +87,8 @@ class ServerScanner(commands.Cog):
 
         else:
             await ctx.send("Invalid argument. Use /help for more information.")
-
     # Methods
+
     async def run_autopop(self, ctx: commands.Context, state: dict):
 
         # Check if there is another instance of the command running
@@ -113,7 +119,7 @@ class ServerScanner(commands.Cog):
 
             await asyncio.sleep(settings.autopop_sleep_interval)
 
-    async def stop_autopop(self, ctx: commands.Context, state: bool):
+    async def stop_autopop(self, ctx: commands.Context, state: dict):
 
         if state["running"]:
             await self.delete_previous_messages(ctx, limit=100)
@@ -121,13 +127,8 @@ class ServerScanner(commands.Cog):
             state["running"] = False
             await ctx.send("Autopop off!")
 
-    async def delete_previous_messages(self, ctx: commands.Context, limit):
-        async for message in ctx.channel.history(limit=limit):
-            if message.id != settings.autopop_to_preserve_msg_id:
-                await message.delete()
-
     async def __wait_for_server_down(self, ctx: commands.Context, map_number, server_command_state: dict):
-        
+
         if not await self.server_data.is_server_down(map_number):
             start_time = time.time()
             while time.time() - start_time < settings.status_timeout:
@@ -141,12 +142,13 @@ class ServerScanner(commands.Cog):
                 server_command_state["maps"].remove(map_number)
                 server_command_state["running"] = False
                 return
-    
+
     async def cog_command_error(self, ctx: commands.Context, error: Exception) -> None:
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to provide a map number.")
         else:
             raise error
+
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(ServerScanner(bot))
