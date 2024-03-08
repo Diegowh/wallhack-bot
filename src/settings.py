@@ -3,6 +3,6 @@ status_timeout: int = 300
 autopop_sleep_interval: int = 180
 autopop_main_map = "2154"
 role_to_tag: str = "<@&492494724528340992>"
-admin_role_id: str = "<@&493097119897616414"
+admin_role_id: int = 493097119897616414
 autopop_channel_id: int = 1208112690657239110  # Reduce coupling
 autopop_to_preserve_msg_id: int = 1210244715715371049
