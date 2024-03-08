@@ -58,7 +58,7 @@ class ServerData:
         server = await self._find_server(map_number)
         return server is None
 
-    async def _find_server(self, map_number) -> dict:
+    async def _find_server(self, map_number) -> dict | None:
 
         assert is_valid_map_number(map_number)
 

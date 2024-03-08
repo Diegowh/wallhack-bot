@@ -23,4 +23,3 @@ class BotState:
                         "maps": [],
                     }
                     print(f"Command {command.name} synced in guild {guild.name}.")
-
