@@ -10,7 +10,6 @@ from src.utils import CommandName, AutopopArg
 
 class ServerScanner(commands.Cog):
 
-
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
         self.server_data = ServerData()
