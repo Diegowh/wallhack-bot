@@ -5,6 +5,7 @@ import discord
 from discord.ext import commands
 from bot_state import BotState
 from utils import BotTokenName
+from settings import Settings
 
 load_dotenv()  # Load .env file.
 BOT_TOKEN = os.getenv(BotTokenName.DEVELOPMENT)
@@ -19,6 +20,7 @@ async def on_ready():
     await load_extensions()
     bot.state = BotState(bot)
     bot.state.sync()
+    bot.settings = Settings()
 
 
 async def load_extensions():
