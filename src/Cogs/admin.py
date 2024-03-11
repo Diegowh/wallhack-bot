@@ -25,7 +25,7 @@ class Admin(commands.Cog):
             return
 
     async def _show_settings(self, ctx: commands.Context):
-        # Implementation here
+
         embed = discord.Embed(title="Settings", color=discord.Color.blue())
         embed.add_field(name="Status command refresh interval", value=self.settings.status_sleep_interval, inline=False)
         embed.add_field(name="Status command timeout", value=self.settings.status_timeout, inline=False)
