@@ -17,14 +17,14 @@ bot = commands.Bot(command_prefix='/', intents=intents)
 @bot.event
 async def on_ready():
     print(f'We have logged in as {bot.user}')
+    bot.settings = Settings()
     await load_extensions()
     bot.state = BotState(bot)
     bot.state.sync()
-    bot.settings = Settings()
 
 
 async def load_extensions():
-    for filename in os.listdir("src/Cogs"):
+    for filename in os.listdir("Cogs"):
         if filename == "__pycache__":
             pass
         elif filename.endswith('.py') and filename not in ["__init__.py", "utils.py", "error.py"]:
