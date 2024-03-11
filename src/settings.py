@@ -4,10 +4,11 @@ class Settings:
         self._status_timeout = 300
         self._autopop_sleep_interval = 180
         self._autopop_main_map = "2154"
-        self._role_to_tag = "<@&492494724528340992>"
         self._admin_role_id = 493097119897616414
         self._autopop_channel_id = 1208112690657239110
         self._autopop_to_preserve_msg_id = 1210244715715371049
+        self._role_id_to_tag = 492494724528340992
+        self._role_to_tag = f"<@&{self._role_id_to_tag}>"
 
     # --- Getters ---
     @property
@@ -25,6 +26,10 @@ class Settings:
     @property
     def autopop_main_map(self):
         return self._autopop_main_map
+
+    @property
+    def role_id_to_tag(self):
+        return self._role_id_to_tag
 
     @property
     def role_to_tag(self):
@@ -67,11 +72,11 @@ class Settings:
             raise ValueError("autopop_main_map must be a string")
         self._autopop_main_map = value
 
-    @role_to_tag.setter
-    def role_to_tag(self, value):
-        if not isinstance(value, str):
-            raise ValueError("role_to_tag must be a string")
-        self._role_to_tag = value
+    @role_id_to_tag.setter
+    def role_id_to_tag(self, value):
+        if not isinstance(value, int):
+            raise ValueError("role_id_to_tag must be an integer")
+        self._role_id_to_tag = value
 
     @admin_role_id.setter
     def admin_role_id(self, value):
