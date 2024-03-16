@@ -27,7 +27,7 @@ async def load_extensions():
         if filename == "__pycache__": pass
         elif filename.endswith('.py') and not filename in ["__init__.py", "utils.py", "error.py"]:
             try:
-                await bot.load_extension(f'Cogs.{filename[:-3]}')
+                await bot.load_extension(f'cogs.{filename[:-3]}')
             except Exception as e:
                 print(f'Failed to load extension {filename[:-3]}')
                 print(e)
