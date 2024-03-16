@@ -16,6 +16,15 @@
     * Description: Checks for the status of the given server. Tags the selected role on settings.py when the server is online.
     * _server_number_: **REQUIRED** 4 digits number. Example: "/status 2154"
 
-### About the bot
+4. **/claims** {_args_}
+    * Description: Makes a message that shows when your giving out baby claims. Tages the selected role on settings.py.
+      Set role_breeder_id for the role you want to be able to give out claims.
+    *_arg_:**REQUIRED**
+            *tame: Name of the tame your giving out
+            *when: Time till the babys pop in hours
+            *where: Where they should come for claims
+   
+   
+### About the bot 
 
 > This is a personal Bot for managing my ARK: Survival Ascended server. It's currently not a complete service. Feel free to message me if you have similar needs or want to collaborate.
