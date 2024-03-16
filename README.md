@@ -22,9 +22,7 @@
       
       *_arg_:**REQUIRED**
          * tame: Name of the tame your giving out
-         * 
          * when: Time till the babys pop in hours
-         * 
          * where: Where they should come for claims
    
    
