@@ -1,12 +1,15 @@
 from enum import StrEnum
 from typing import Any, Union
+import time
 
 def _validate_strenum_value(value: str):
     """Raises TypeError if value is not a string
     """
     if not isinstance(value, str):
         raise TypeError(f"Expected string, got {type(value).__name__}")
-    
+        
+def time_to_unix(addHours: int) -> int:
+    return time.time() + addHours*60*60    
 
 class CommandName(StrEnum):
     AUTOPOP = "autopop"
