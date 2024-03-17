@@ -10,6 +10,57 @@ class Settings:
         self._role_id_to_tag = 492494724528340992
         self._role_to_tag = f"<@&{self._role_id_to_tag}>"
 
+        self._data = {
+            "status_sleep_interval": {
+                "id": 0,
+                "name": "Status command refresh interval",
+                "value": self.status_sleep_interval,
+                "type": int,
+            },
+            "status_timeout": {
+                "id": 1,
+                "name": "Status command timeout",
+                "value": self.status_timeout,
+                "type": int,
+            },
+            "autopop_sleep_interval": {
+                "id": 2,
+                "name": "Autopop refresh interval",
+                "value": self.autopop_sleep_interval,
+                "type": int,
+            },
+            "autopop_main_map": {
+                "id": 3,
+                "name": "Autopop main map",
+                "value": self.autopop_main_map,
+                "type": str,
+            },
+            "role_id_to_tag": {
+                "id": 4,
+                "name": "Role id to tag",
+                "value": self.role_id_to_tag,
+                "type": int,
+            },
+            "admin_role_id": {
+                "id": 5,
+                "name": "Admin role id",
+                "value": self.admin_role_id,
+                "type": int,
+            },
+            "autopop_channel_id": {
+                "id": 6,
+                "name": "Autopop channel id",
+                "value": self.autopop_channel_id,
+                "type": int,
+            },
+            "autopop_to_preserve_msg_id": {
+                "id": 7,
+                "name": "Message id to preserve",
+                "value": self.autopop_to_preserve_msg_id,
+                "type": int,
+            },
+        }
+
     # --- Getters ---
     @property
     def status_sleep_interval(self):
@@ -46,6 +97,10 @@ class Settings:
     @property
     def autopop_to_preserve_msg_id(self):
         return self._autopop_to_preserve_msg_id
+
+    @property
+    def data(self):
+        return self._data
 
     # --- Setters ---
     @status_sleep_interval.setter
