@@ -1,7 +1,8 @@
 from discord.ext import commands
 import discord
-from utils import MENTION_RESPONSES
+from src.utils import MENTION_RESPONSES
 import random
+
 
 class AutoInteractions(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
