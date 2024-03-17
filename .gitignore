@@ -185,3 +185,4 @@ pyrightconfig.json
 pyvenv.cfg
 pip-selfcheck.json
 
+.idea/
