@@ -25,17 +25,18 @@ class Admin(commands.Cog):
             return
 
     async def _show_settings(self, ctx: commands.Context):
-
-        embed = discord.Embed(title="Settings", color=discord.Color.blue())
-        embed.add_field(name="Status command refresh interval", value=self.settings.status_sleep_interval, inline=False)
-        embed.add_field(name="Status command timeout", value=self.settings.status_timeout, inline=False)
-        embed.add_field(name="Autopop refresh interval", value=self.settings.autopop_sleep_interval, inline=False)
-        embed.add_field(name="Autopop main map", value=self.settings.autopop_main_map, inline=False)
-        embed.add_field(name="Role id to tag", value=self.settings.role_id_to_tag, inline=False)
-        embed.add_field(name="Admin role id", value=self.settings.admin_role_id, inline=False)
-        embed.add_field(name="Autopop channel id", value=self.settings.autopop_channel_id, inline=False)
-        embed.add_field(name="Message id to preserve", value=self.settings.autopop_to_preserve_msg_id, inline=False)
+        embed = self._create_settings_embed()
         await ctx.send(embed=embed)
+
+    def _create_settings_embed(self):
+        embed = discord.Embed(title="Settings", color=discord.Color.blue())
+        for command_data in self.settings.data.values():
+            embed.add_field(
+                name=f"{command_data['id']} - {command_data['name']}",
+                value=command_data["value"],
+                inline=False
+            )
+        return embed
 
 
 async def setup(bot: commands.Bot):
