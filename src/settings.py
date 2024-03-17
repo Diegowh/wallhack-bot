@@ -104,7 +104,7 @@ class Settings:
     @property
     def autopop_to_preserve_msg_id(self):
         return self._autopop_to_preserve_msg_id
-      
+
     @property
     def breeder_role_id(self):
         return self._breeder_role_id
