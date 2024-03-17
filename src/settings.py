@@ -9,6 +9,7 @@ class Settings:
         self._autopop_to_preserve_msg_id = 1210244715715371049
         self._role_id_to_tag = 492494724528340992
         self._role_to_tag = f"<@&{self._role_id_to_tag}>"
+        self._breeder_role_id: int  = 1209578090666393630
 
         self._data = {
             "status_sleep_interval": {
@@ -59,6 +60,12 @@ class Settings:
                 "value": self.autopop_to_preserve_msg_id,
                 "type": int,
             },
+            "breeder_role_id" : {
+              "id": 8,
+              "name": "Breeder role ID",
+              "value": self.breeder_role_id,
+              "type": int,
+            },
         }
 
     # --- Getters ---
@@ -97,6 +104,10 @@ class Settings:
     @property
     def autopop_to_preserve_msg_id(self):
         return self._autopop_to_preserve_msg_id
+      
+    @property
+    def breeder_role_id(self):
+        return self._breeder_role_id
 
     @property
     def data(self):
