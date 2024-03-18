@@ -27,6 +27,7 @@ async def on_ready():
     await load_extensions()
     bot.state = BotState(bot)
     bot.state.sync()
+    await bot.tree.sync()
 
 
 def load_or_create_settings() -> dict:
