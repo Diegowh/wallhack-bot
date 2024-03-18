@@ -18,7 +18,7 @@ class ServerData:
         assert isinstance(response, list)
         return response
 
-    async def pop(self, map_number) -> discord.Embed:
+    async def pop(self, map_number: int) -> discord.Embed:
         if not is_valid_map_number(map_number):
             time_now = f"<t:{int(time.time())}>"
             invalid_num_msg = discord.Embed(
@@ -65,7 +65,7 @@ class ServerData:
         server_list = self.get()
 
         for server in server_list:
-            if map_number in server.get("Name"):
+            if str(map_number) in server.get("Name"):
                 self.server_data = server
                 self.name = server.get("Name")
                 return server

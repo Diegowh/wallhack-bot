@@ -41,7 +41,7 @@
         "status_sleep_interval": 15,
         "status_timeout": 600,
         "autopop_sleep_interval": 180,
-        "autopop_main_map": "2154",
+        "autopop_main_map": 2154,
         "role_id_to_tag": 492494724528340992,
         "admin_role_id": 493097119897616414,
         "autopop_channel_id": 1208112690657239110,
