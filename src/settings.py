@@ -1,3 +1,55 @@
+default_settings = {
+    "data": {
+        "status_sleep_interval": {
+            "id": 0,
+            "name": "Status command refresh interval"
+        },
+        "status_timeout": {
+            "id": 1,
+            "name": "Status command timeout"
+        },
+        "autopop_sleep_interval": {
+            "id": 2,
+            "name": "Autopop refresh interval"
+        },
+        "autopop_main_map": {
+            "id": 3,
+            "name": "Autopop main map"
+        },
+        "role_id_to_tag": {
+            "id": 4,
+            "name": "Role id to tag"
+        },
+        "admin_role_id": {
+            "id": 5,
+            "name": "Admin role id"
+        },
+        "autopop_channel_id": {
+            "id": 6,
+            "name": "Autopop channel id"
+        },
+        "autopop_to_preserve_msg_id": {
+            "id": 7,
+            "name": "Message id to preserve"
+        },
+        "breeder_role_id": {
+            "id": 8,
+            "name": "Breeder role ID"
+        }
+    },
+    "values": {
+        "status_sleep_interval": 15,
+        "status_timeout": 600,
+        "autopop_sleep_interval": 180,
+        "autopop_main_map": "2154",
+        "role_id_to_tag": 492494724528340992,
+        "admin_role_id": 493097119897616414,
+        "autopop_channel_id": 1208112690657239110,
+        "autopop_to_preserve_msg_id": 1210244715715371049,
+        "breeder_role_id": 1209578090666393630
+    }
+}
+
 class Settings:
     def __init__(self):
         self._status_sleep_interval = 15
