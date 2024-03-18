@@ -8,6 +8,7 @@ class Admin(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.settings = self.bot.settings.get("values")
+        self.settings_data = self.bot.settings.get("data")
 
     def is_admin(self, ctx: commands.Context):
         author_role_ids = [role.id for role in ctx.author.roles]
@@ -30,10 +31,10 @@ class Admin(commands.Cog):
 
     def _create_settings_embed(self):
         embed = discord.Embed(title="Settings", color=discord.Color.blue())
-        for command_data in self.settings.values():
+        for command_name, command_data in self.settings_data.items():
             embed.add_field(
                 name=f"{command_data['id']} - {command_data['name']}",
-                value=command_data["value"],
+                value=self.settings[command_name],
                 inline=False
             )
         return embed
