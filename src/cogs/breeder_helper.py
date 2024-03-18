@@ -1,7 +1,7 @@
 import discord
 from discord import Embed, app_commands
 from discord.ext import commands
-from src.utils import time_to_unix
+from utils import time_to_unix
 
 
 class BreederHelper(commands.Cog):

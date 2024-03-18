@@ -1,6 +1,6 @@
 from discord.ext import commands
 import discord
-from src.utils import CommandName
+from utils import CommandName
 
 
 class Admin(commands.Cog):

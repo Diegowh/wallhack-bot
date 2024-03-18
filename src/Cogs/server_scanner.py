@@ -3,8 +3,8 @@ import time
 
 from discord.ext import commands
 
-from src.server_data import ServerData
-from src.utils import CommandName, AutopopArg
+from server_data import ServerData
+from utils import CommandName, AutopopArg
 
 
 class ServerScanner(commands.Cog):
