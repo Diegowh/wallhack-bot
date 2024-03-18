@@ -27,8 +27,8 @@ async def on_ready():
     await load_extensions()
     bot.state = BotState(bot)
     bot.state.sync()
-    await bot.tree.sync()
-
+    synced = await bot.tree.sync()
+    print(f"Synced {len(synced)} slash commands")
 
 def load_or_create_settings() -> dict:
     print("Trying to load settings...")
