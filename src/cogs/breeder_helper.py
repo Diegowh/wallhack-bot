@@ -1,7 +1,7 @@
 import discord
 from discord import Embed, app_commands
 from discord.ext import commands
-from utils import time_to_unix
+from utils import CommandName, time_to_unix
 
 
 class BreederHelper(commands.Cog):
@@ -10,7 +10,7 @@ class BreederHelper(commands.Cog):
         self.bot = bot
         self.settings = self.bot.settings.get("values")
 
-    @app_commands.command(name="claims",description=f"Makes a ping in that the member know u giving out tames")
+    @app_commands.command(name=CommandName.CLAIMS,description=f"Makes a ping in that the member know u giving out tames")
     async def claims(
             #Args of the SlashCommand
             self,

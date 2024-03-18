@@ -18,6 +18,7 @@ class CommandName(StrEnum):
     STATUS = "status"
     HELP = "help"
     SETTINGS = "settings"
+    CLAIMS = "claims"
 
     @classmethod
     def _missing_(cls, value: str) -> Any:
