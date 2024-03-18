@@ -39,8 +39,8 @@ class ServerScanner(commands.Cog):
             if not await self.server_data.is_server_down(map_number):
 
                 # Server is still up (maybe wrong command use or the server is still showing)
-
-                await ctx.send(f"{self.settings.role_to_tag} {map_number} is up!")
+                member_role = f"<@&{self.settings.role_to_tag}>"
+                await ctx.send(f"{member_role} {map_number} is up!")
                 server_command_state["maps"].remove(map_number)
                 server_command_state["running"] = False
                 print(f"{map_number} status: Online")
