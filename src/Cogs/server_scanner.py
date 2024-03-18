@@ -11,13 +11,13 @@ class ServerScanner(commands.Cog):
 
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
-        self.settings = self.bot.settings
+        self.settings = self.bot.settings.get("values")
         self.server_data = ServerData()
         self.autopop_task = None
 
     async def delete_previous_messages(self, ctx: commands.Context, limit):
         async for message in ctx.channel.history(limit=limit):
-            if message.id != self.settings.autopop_to_preserve_msg_id:
+            if message.id != self.settings.get("autopop_to_preserve_msg_id"):
                 await message.delete()
 
     @commands.command(name=CommandName.POP)
@@ -39,7 +39,7 @@ class ServerScanner(commands.Cog):
             if not await self.server_data.is_server_down(map_number):
 
                 # Server is still up (maybe wrong command use or the server is still showing)
-                member_role = f"<@&{self.settings.role_to_tag}>"
+                member_role = f"<@&{self.settings.get("role_to_tag")}>"
                 await ctx.send(f"{member_role} {map_number} is up!")
                 server_command_state["maps"].remove(map_number)
                 server_command_state["running"] = False
@@ -47,7 +47,7 @@ class ServerScanner(commands.Cog):
                 break
 
             # Server is still down
-            await asyncio.sleep(self.settings.status_sleep_interval)
+            await asyncio.sleep(self.settings.get("status_sleep_interval"))
 
     @commands.command(name=CommandName.STATUS)
     async def status(self, ctx: commands.Context, map_number):
@@ -108,14 +108,14 @@ class ServerScanner(commands.Cog):
         last_msg = None  # Im using this just to avoid spamming the channel
         while state["running"]:
 
-            pop_message = await self.server_data.pop(self.settings.autopop_main_map)
+            pop_message = await self.server_data.pop(self.settings.get("autopop_main_map"))
 
             if last_msg is not None:
                 await last_msg.edit(embed=pop_message)
             else:
                 last_msg = await ctx.send(embed=pop_message)
 
-            await asyncio.sleep(self.settings.autopop_sleep_interval)
+            await asyncio.sleep(self.settings.get("autopop_sleep_interval"))
 
     async def stop_autopop(self, ctx: commands.Context, state: dict):
 
@@ -129,8 +129,8 @@ class ServerScanner(commands.Cog):
 
         if not await self.server_data.is_server_down(map_number):
             start_time = time.time()
-            while time.time() - start_time < self.settings.status_timeout:
-                await asyncio.sleep(self.settings.status_sleep_interval)
+            while time.time() - start_time < self.settings.get("status_timeout"):
+                await asyncio.sleep(self.settings.get("status_sleep_interval"))
                 if await self.server_data.is_server_down(map_number):
                     break
 
