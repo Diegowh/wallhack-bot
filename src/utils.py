@@ -4,7 +4,14 @@ import time
 
 
 def _validate_strenum_value(value: str):
-    """Raises TypeError if value is not a string
+    """
+    Raises TypeError if value is not a string
+
+    Args:
+        value (str): Value to be validated
+
+    Raises:
+        TypeError: If the value is not a string
     """
     if not isinstance(value, str):
         raise TypeError(f"Expected string, got {type(value).__name__}")
@@ -18,6 +25,7 @@ class CommandName(StrEnum):
     STATUS = "status"
     HELP = "help"
     SETTINGS = "settings"
+    CLAIMS = "claims"
 
     @classmethod
     def _missing_(cls, value: str) -> Any:
@@ -63,6 +71,15 @@ class AutopopArg(StrEnum):
 
 
 def is_valid_map_number(number: Union[str, int]) -> bool:
+    """
+    Validate if the given number is a valid map number for ARK Official Servers
+
+    Args:
+        number (Union[str, int]): The number to be validated
+
+    Returns:
+        bool: True if the number is a valid map number, False otherwise
+    """
     if isinstance(number, (str, int)):
         number = str(number)
         if number.isdigit() and len(number) == 4:
@@ -78,5 +95,9 @@ MENTION_RESPONSES = [
     "idc",
     "802 was better",
     "Cómo?",
-    "Gracias"
+    "Gracias",
+    "hola",
+    "buenos dias",
+    "uwu",
+    "que te den"
 ]

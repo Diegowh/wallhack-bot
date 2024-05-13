@@ -1,6 +1,6 @@
 from discord.ext import commands
 import discord
-from src.utils import MENTION_RESPONSES
+from utils import MENTION_RESPONSES
 import random
 
 

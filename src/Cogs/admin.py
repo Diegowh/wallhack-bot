@@ -1,17 +1,18 @@
 from discord.ext import commands
 import discord
-from src.utils import CommandName
+from utils import CommandName
 
 
 class Admin(commands.Cog):
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.settings = self.bot.settings
+        self.settings = self.bot.settings.get("values")
+        self.settings_data = self.bot.settings.get("data")
 
     def is_admin(self, ctx: commands.Context):
         author_role_ids = [role.id for role in ctx.author.roles]
-        return ctx.author.guild_permissions.administrator or self.settings.admin_role_id in author_role_ids
+        return ctx.author.guild_permissions.administrator or self.settings.get("admin_role_id") in author_role_ids
 
     @commands.command(name=CommandName.SETTINGS)
     async def settings(self, ctx: commands.Context, *args):
@@ -30,10 +31,10 @@ class Admin(commands.Cog):
 
     def _create_settings_embed(self):
         embed = discord.Embed(title="Settings", color=discord.Color.blue())
-        for command_data in self.settings.data.values():
+        for command_name, command_data in self.settings_data.items():
             embed.add_field(
                 name=f"{command_data['id']} - {command_data['name']}",
-                value=command_data["value"],
+                value=self.settings[command_name],
                 inline=False
             )
         return embed
