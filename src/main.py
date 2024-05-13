@@ -6,11 +6,14 @@ import discord
 from discord.ext import commands
 from bot_state import BotState
 from utils import BotTokenName
+from config.config import (
+    DEVELOPMENT_BOT_TOKEN,
+    PRODUCTION_BOT_TOKEN,
+)
 from settings import default_settings
 
 
-load_dotenv() # Load .env file.
-BOT_TOKEN = os.getenv(BotTokenName.DEVELOPMENT)
+
 
 
 intents = discord.Intents.all()  # need to enable
@@ -59,4 +62,4 @@ async def load_extensions():
 
 
 if __name__ == "__main__":
-    bot.run(BOT_TOKEN)
+    bot.run(PRODUCTION_BOT_TOKEN)

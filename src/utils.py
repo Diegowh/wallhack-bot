@@ -95,5 +95,9 @@ MENTION_RESPONSES = [
     "idc",
     "802 was better",
     "Cómo?",
-    "Gracias"
+    "Gracias",
+    "hola",
+    "buenos dias",
+    "uwu",
+    "que te den"
 ]
