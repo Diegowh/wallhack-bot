@@ -14,8 +14,6 @@ from settings import default_settings
 
 
 
-
-
 intents = discord.Intents.all()  # need to enable
 bot = commands.Bot(command_prefix='/', intents=intents)
 
