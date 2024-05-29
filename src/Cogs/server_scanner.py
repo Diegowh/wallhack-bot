@@ -108,7 +108,7 @@ class ServerScanner(commands.Cog):
         last_msg = None  # Im using this just to avoid spamming the channel
         while state["running"]:
 
-            pop_message = await self.server_data.pop(self.settings.get("autopop_main_map"))
+            pop_message = await self.server_data.pop(str(self.settings.get("autopop_main_map")))
 
             if last_msg is not None:
                 await last_msg.edit(embed=pop_message)
