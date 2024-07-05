@@ -71,20 +71,20 @@ class ServerScanner(commands.Cog):
 
         await self.__run_status_task(ctx, map_number, server_command_state)
 
-    @commands.command(name=CommandName.AUTOPOP)
-    async def autopop(self, ctx: commands.Context, arg: str):
-        command_name = ctx.command.name
-        discord_server_id = ctx.guild.id
-        server_command_state: dict = self.bot.state.state[discord_server_id][command_name]
+#    @commands.command(name=CommandName.AUTOPOP)
+#    async def autopop(self, ctx: commands.Context, arg: str):
+#        command_name = ctx.command.name
+#        discord_server_id = ctx.guild.id
+#        server_command_state: dict = self.bot.state.state[discord_server_id][command_name]
 
-        if arg.lower() == AutopopArg.ON:
-            await self.run_autopop(ctx, server_command_state)
+#        if arg.lower() == AutopopArg.ON:
+#            await self.run_autopop(ctx, server_command_state)
 
-        elif arg.lower() == AutopopArg.OFF:
-            await self.stop_autopop(ctx, server_command_state)
+#        elif arg.lower() == AutopopArg.OFF:
+#            await self.stop_autopop(ctx, server_command_state)
 
-        else:
-            await ctx.send("Invalid argument. Use /help for more information.")
+#        else:
+#            await ctx.send("Invalid argument. Use /help for more information.")
     # Methods
 
     async def run_autopop(self, ctx: commands.Context, state: dict):
