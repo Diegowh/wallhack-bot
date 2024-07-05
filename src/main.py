@@ -6,7 +6,7 @@ import json
 import discord
 from discord.ext import commands, tasks
 from bot_state import BotState
-from src.server_data import ServerData
+from server_data import ServerData
 from utils import BotTokenName
 from config.config import (
     DEVELOPMENT_BOT_TOKEN,
@@ -15,12 +15,12 @@ from config.config import (
 from settings import default_settings
 
 
-
 intents = discord.Intents.all()  # need to enable
 bot = commands.Bot(command_prefix='/', intents=intents)
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 settings_file_dir = os.path.join(script_dir, "settings.json")
+
 
 @bot.event
 async def on_ready():
@@ -33,8 +33,12 @@ async def on_ready():
     synced = await bot.tree.sync()
     print(f"Synced {len(synced)} slash commands")
 
+    start_auto_pop.start()
+
+
 @tasks.loop(seconds=30)
 async def start_auto_pop():
+    print("Starting autopop!")
     server_data_manager = ServerData()
     map_channel_id = {
         "2154": 1258872766845681756,
@@ -45,14 +49,13 @@ async def start_auto_pop():
         # Delete previous msg
         await servers_pop_channel.purge(limit=4)
 
-
     for map_number, channel_id in map_channel_id.items():
 
         # Change channel names with the actual pop
-        map_data = server_data_manager.fetch_map_data(map_number=map_number)
+        map_data = await server_data_manager.fetch_map_data(map_number=map_number)
 
         if map_data is None:
-            embed = server_data_manager.create_error_embed(
+            embed = await server_data_manager.create_error_embed(
                 title="Server not found",
                 description="Server is down"
             )
@@ -71,7 +74,6 @@ async def start_auto_pop():
 
             pop_embed = server_data_manager.create_pop_message(map_data=map_data)
             await servers_pop_channel.send(embed=pop_embed)
-
 
 
 def load_or_create_settings() -> dict:
