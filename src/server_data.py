@@ -73,5 +73,5 @@ class ServerData:
 
         try:
             return self.ark_server.map_data_by_number(map_number)
-        except MapNotFoundError or ServerSessionNotFoundError:
+        except (MapNotFoundError, ServerSessionNotFoundError):
             return None
