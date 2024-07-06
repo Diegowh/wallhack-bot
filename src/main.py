@@ -1,3 +1,4 @@
+import asyncio
 from asyncio import tasks
 import os
 
@@ -21,6 +22,8 @@ bot = commands.Bot(command_prefix='/', intents=intents)
 script_dir = os.path.dirname(os.path.abspath(__file__))
 settings_file_dir = os.path.join(script_dir, "settings.json")
 
+message_ids = {}
+
 
 @bot.event
 async def on_ready():
@@ -33,47 +36,51 @@ async def on_ready():
     synced = await bot.tree.sync()
     print(f"Synced {len(synced)} slash commands")
 
-    start_auto_pop.start()
-
-
-@tasks.loop(seconds=30)
-async def start_auto_pop():
-    print("Starting autopop!")
-    server_data_manager = ServerData()
-    map_channel_id = {
-        "2154": 1258872766845681756,
-        "2421": 1258872848961896501
-    }
+    # Delete servers pop channel old msg
     servers_pop_channel = bot.get_channel(1258888031285542992)
     if servers_pop_channel:
         # Delete previous msg
         await servers_pop_channel.purge(limit=4)
 
-    for map_number, channel_id in map_channel_id.items():
+    start_auto_pop.start()
 
-        # Change channel names with the actual pop
+
+@tasks.loop(seconds=30)
+async def start_auto_pop():
+    server_data_manager = ServerData()
+
+    maps_to_check = ["2154", "2421"]
+    servers_pop_channel = bot.get_channel(1258888031285542992)
+
+    for map_number in maps_to_check:
+
         map_data = await server_data_manager.fetch_map_data(map_number=map_number)
+        await asyncio.sleep(1)
 
         if map_data is None:
-            embed = await server_data_manager.create_error_embed(
+            embed = server_data_manager.create_error_embed(
                 title="Server not found",
                 description="Server is down"
             )
+            if map_number in message_ids:
+                message = await servers_pop_channel.fetch_message(message_ids[map_number])
+                await message.edit(embed=embed)
 
-            await servers_pop_channel.send(embed=embed)
+            else:
+                message = await servers_pop_channel.send(embed=embed)
+                message_ids[map_number] = message.id
         else:
             players = map_data["totalPlayers"]
             max_players = map_data["settings"]["maxPublicPlayers"]
 
-            new_channel_name = f"{map_number} -- {players}/{max_players}"
-
-            channel = bot.get_channel(channel_id)
-
-            if channel:
-                await channel.edit(name=new_channel_name)
-
             pop_embed = server_data_manager.create_pop_message(map_data=map_data)
-            await servers_pop_channel.send(embed=pop_embed)
+
+            if map_number in message_ids:
+                message = await servers_pop_channel.fetch_message(message_ids[map_number])
+                await message.edit(embed=pop_embed)
+            else:
+                message = await servers_pop_channel.send(embed=pop_embed)
+                message_ids[map_number] = message.id
 
 
 def load_or_create_settings() -> dict:
@@ -84,6 +91,7 @@ def load_or_create_settings() -> dict:
     with open(settings_file_dir, "r") as file:
         print("Settings loaded")
         return json.load(file)
+
 
 def save_settings(settings: dict) -> None:
     with open(settings_file_dir, "w") as file:
