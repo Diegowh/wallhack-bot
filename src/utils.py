@@ -1,6 +1,6 @@
+import time
 from enum import StrEnum
 from typing import Any, Union
-import time
 
 
 def _validate_strenum_value(value: str):

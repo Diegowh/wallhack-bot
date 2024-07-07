@@ -1,10 +1,11 @@
-from exceptions.exceptions import (
-    MapNotFoundError, 
-    ServerSessionNotFoundError
-    )
-from api.schemas.MapNumber import MapNumber
-from api.controllers.ServerlistQuerier import ServerlistQuerier
 from api.controllers.EpicGamesServerQuerier import EpicGamesServerQuerier
+from api.controllers.ServerlistQuerier import ServerlistQuerier
+from api.schemas.MapNumber import MapNumber
+from exceptions.exceptions import (
+    MapNotFoundError,
+    ServerSessionNotFoundError
+)
+
 
 class ARKServer:
     def __init__(self) -> None:

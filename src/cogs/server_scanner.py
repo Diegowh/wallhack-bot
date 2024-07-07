@@ -2,9 +2,8 @@ import asyncio
 import time
 
 from discord.ext import commands
-
 from server_data import ServerData
-from utils import CommandName, AutopopArg
+from utils import CommandName
 
 
 class ServerScanner(commands.Cog):

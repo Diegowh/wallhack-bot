@@ -1,15 +1,13 @@
 import time
 
 import discord
-from discord.types.embed import Embed
 
-from utils import is_valid_map_number
 from api.controllers.ARKServer import ARKServer
 from exceptions.exceptions import (
     MapNotFoundError,
     ServerSessionNotFoundError
-    )
-
+)
+from utils import is_valid_map_number
 
 
 class ServerData:

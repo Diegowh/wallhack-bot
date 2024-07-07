@@ -1,6 +1,5 @@
 
 from starlette.config import Config
-from starlette.datastructures import Secret
 
 config = Config(".env")
 
