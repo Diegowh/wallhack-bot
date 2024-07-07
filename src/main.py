@@ -1,11 +1,13 @@
 from __future__ import annotations
+
 import asyncio
+
 import discord
-from core.bot import Bot
+
 from config.config import (
-    DEVELOPMENT_BOT_TOKEN,
     PRODUCTION_BOT_TOKEN,
 )
+from core.bot import Bot
 
 
 async def main():

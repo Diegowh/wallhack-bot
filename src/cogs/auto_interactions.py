@@ -1,7 +1,8 @@
-from discord.ext import commands
-import discord
-from utils import MENTION_RESPONSES
 import random
+
+import discord
+from discord.ext import commands
+from utils import MENTION_RESPONSES
 
 
 class AutoInteractions(commands.Cog):

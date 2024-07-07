@@ -1,7 +1,10 @@
-import requests
 import json
+
+import requests
 from config.config import SERVERLIST_URL
+
 from .Querier import Querier
+
 
 class ServerlistQuerier(Querier):
     """

@@ -1,13 +1,15 @@
-import requests
 from base64 import b64encode
 
+import requests
 from config.config import (
-    CLIENT_ID, 
-    CLIENT_SECRET, 
-    DEPLOYMENT_ID, 
+    CLIENT_ID,
+    CLIENT_SECRET,
+    DEPLOYMENT_ID,
     EPIC_API,
 )
+
 from .Querier import Querier
+
 
 class EpicGamesServerQuerier(Querier):
     def __init__(self) -> None:
@@ -35,9 +37,7 @@ class EpicGamesServerQuerier(Querier):
             self.access_token = response.json().get('access_token')
         else:
             print(f"Failed to obtain access token: {response.text}")
-        
-    import requests # Ensure requests library is installed
-    
+
     def _query_info(self, ip_address):
         """
         Query server information using the Epic Games API.
