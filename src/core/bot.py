@@ -11,6 +11,7 @@ from bot_state import BotState
 from discord.ext import commands, tasks
 from server_data import ServerData
 from settings import default_settings
+from .embed import Embed
 
 log = getLogger("Bot")
 
@@ -57,14 +58,53 @@ class Bot(commands.AutoShardedBot):
 
         self.start_auto_pop.start()
 
-    async def success(self, content: str, interaction: discord.Interaction, ephemeral: Optional[bool]):
-        """Sending success message"""
-        pass
+    async def success(
+            self,
+            message: str,
+            interaction: discord.Interaction,
+            *,
+            ephemeral: bool = False,
+            embed: Optional[bool] = True
+    ) -> Optional[discord.WebhookMessage]:
 
-    async def error(self, content: str, interaction: discord.Interaction, ephemeral: Optional[bool]):
-        """Sending error message"""
-        pass
+        if embed:
+            if interaction.response.is_done():
+                return await interaction.response.followup.send(
+                    embed=Embed(description=message, color=discord.Color.green()),
+                    ephemeral=ephemeral
+                )
+            return await interaction.response.send_message(
+                embed=Embed(description=message,color=discord.Color.green()),
+                ephemeral=ephemeral
+            )
+        else:
+            if interaction.response.is_done():
+                return await interaction.followup.send(content=f"{message}", ephemeral=ephemeral)
+            return await interaction.response.send_message(content=f"{message}", ephemeral=ephemeral)
 
+    async def error(
+            self,
+            message: str,
+            interaction: discord.Interaction,
+            *,
+            ephemeral: bool = False,
+            embed: Optional[bool] = True
+    ) -> Optional[discord.WebhookMessage]:
+
+        if embed:
+            if interaction.response.is_done():
+                return await interaction.response.followup.send(
+                    embed=Embed(description=message, color=discord.Color.red()),
+                    ephemeral=ephemeral
+                )
+            return await interaction.response.send_message(
+                embed=Embed(description=message,color=discord.Color.red()),
+                ephemeral=ephemeral
+            )
+        else:
+            if interaction.response.is_done():
+                return await interaction.followup.send(content=f"{message}", ephemeral=ephemeral)
+            return await interaction.response.send_message(content=f"{message}", ephemeral=ephemeral)
     @tasks.loop(seconds=30)
     async def start_auto_pop(self):
         self.server_data_manager = ServerData()
