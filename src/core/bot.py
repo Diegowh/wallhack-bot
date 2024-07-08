@@ -105,11 +105,15 @@ class Bot(commands.AutoShardedBot):
             if interaction.response.is_done():
                 return await interaction.followup.send(content=f"{message}", ephemeral=ephemeral)
             return await interaction.response.send_message(content=f"{message}", ephemeral=ephemeral)
+
     @tasks.loop(seconds=30)
     async def start_auto_pop(self):
         self.server_data_manager = ServerData()
 
         self.servers_pop_channel = self.get_channel(1258888031285542992)
+
+        if self.servers_pop_channel is None:
+            self.start_auto_pop.cancel()
 
         for map_number in self.maps_to_check:
 
