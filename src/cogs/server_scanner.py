@@ -44,7 +44,7 @@ class ServerScanner(commands.Cog):
 
         await ctx.send(f"Started checking status for server {self.status_map_number}...")
 
-        await asyncio.sleep(30)  # Le doy 5 minutos por si ha sido un uso indebido del comando
+        await asyncio.sleep(300)  # Le doy 5 minutos por si ha sido un uso indebido del comando
         if not self.server_was_down:
             await ctx.send(f"The server {map_number} is still up, try again.")
             self.check_status.cancel()
