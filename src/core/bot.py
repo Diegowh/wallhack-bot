@@ -47,8 +47,6 @@ class Bot(commands.AutoShardedBot):
         await self.load_extensions()
         self.state = BotState(self)
         self.state.sync()
-        synced = await self.tree.sync()
-        print(f"Synced {len(synced)} slash commands")
 
         # Delete servers pop channel old msg
         self.servers_pop_channel = self.get_channel(1258888031285542992)
@@ -143,7 +141,6 @@ class Bot(commands.AutoShardedBot):
                     self.message_ids[map_number] = message.id
 
     def load_or_create_settings(self) -> dict:
-        print("Trying to load settings...")
         if not os.path.exists(self.settings_file_dir):
             print("Settings file not found, creating new one...")
             self.save_settings(default_settings)
