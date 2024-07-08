@@ -36,8 +36,9 @@ class ServerScanner(commands.Cog):
         self.status_map_number = map_number
         self.status_ctx = ctx
 
-        if self.check_status is not None:
-            self.check_status.cancel()
+        if self.check_status.is_running():
+            await ctx.send("Status check is already running.")
+            return
 
         self.server_was_down = False
         self.check_status.start()
