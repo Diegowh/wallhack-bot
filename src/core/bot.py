@@ -162,14 +162,18 @@ class Bot(commands.AutoShardedBot):
             print("Settings saved")
 
     async def load_extensions(self):
-        for filename in os.listdir("src/cogs"):
-            if filename == "__pycache__":
-                pass
-            elif filename.endswith('.py') and filename not in ["__init__.py", "utils.py", "error.py"]:
-                try:
-                    await self.load_extension(f'cogs.{filename[:-3]}')
-                    print(f'Loaded extension {filename[:-3]}')
-                except Exception as e:
-                    print(f'Failed to load extension {filename[:-3]}')
-                    print(e)
+        for root, _, files in os.walk("src/cogs"):
+            for file in files:
+                if file.endswith(".py") and file != "__init__.py":
+
+                    extension = os.path.join(root, file)
+                    extension = extension.replace("/", ".").replace("\\", ".")
+                    extension = extension[4:-3]  # Elimina src/ y .py
+
+                    try:
+                        await self.load_extension(extension)
+                        print(f"Loaded extension{extension}")
+                    except Exception as e:
+                        print(f"Failed to load extension {extension}")
+                        print(e)
 
