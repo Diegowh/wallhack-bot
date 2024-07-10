@@ -12,6 +12,9 @@ from discord.ext import commands, tasks
 from server_data import ServerData
 from settings import default_settings
 from .embed import Embed
+from views.close_ticket import CloseTicket
+from views.create_ticket import CreateTicket
+from views.delete_ticket import DeleteTicket
 
 log = getLogger("Bot")
 
@@ -47,6 +50,11 @@ class Bot(commands.AutoShardedBot):
         await self.load_extensions()
         self.state = BotState(self)
         self.state.sync()
+
+        self.add_view(CreateTicket())
+        self.add_view(CloseTicket())
+        self.add_view(DeleteTicket())
+        print("Views has been added.")
 
         # Delete servers pop channel old msg
         self.servers_pop_channel = self.get_channel(1258888031285542992)
