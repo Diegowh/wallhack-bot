@@ -5,7 +5,7 @@ from discord.ext import commands
 from utils import MENTION_RESPONSES
 
 
-class AutoInteractions(commands.Cog):
+class Interactions(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
         
@@ -22,4 +22,4 @@ class AutoInteractions(commands.Cog):
 
 
 async def setup(bot: commands.Bot):
-    await bot.add_cog(AutoInteractions(bot))
+    await bot.add_cog(Interactions(bot))
