@@ -1,3 +1,5 @@
+import discord
+
 from . import *
 from .delete_ticket import DeleteTicket
 
@@ -20,18 +22,28 @@ class CloseTicket(discord.ui.View):
             interaction.guild.categories,
             id=CLOSED_TICKETS_CATEGORY_ID
         )
-        role: discord.Role = interaction.guild.get_role(MEMBER_ROLE_ID)
+        member_role: discord.Role = interaction.guild.get_role(MEMBER_ROLE_ID)
+
+        ticket_creator_id = int(interaction.channel.topic.split()[0])
+        ticket_creator = interaction.guild.get_member(ticket_creator_id)
 
         overwrites = {
             interaction.guild.default_role: discord.PermissionOverwrite(read_messages=False),
-            role: discord.PermissionOverwrite(read_messages=True, send_messages=True, manage_messages=True),
-            interaction.guild.me: discord.PermissionOverwrite(read_messages=True, send_messages=True)
+            member_role: discord.PermissionOverwrite(read_messages=False, send_messages=False, manage_messages=False),
+            ticket_creator: discord.PermissionOverwrite(read_messages=True, send_messages=False, manage_messages=False)
         }
-        await interaction.channel.edit(category=category)
+        await interaction.channel.edit(category=category, overwrites=overwrites)
         await interaction.channel.send(
             embed=discord.Embed(
                 description="Ticket Closed!",
                 color=discord.Color.red(),
             ),
             view=DeleteTicket()
+        )
+
+        await send_log(
+            title="Ticket closed",
+            description=f"Closed by {interaction.user.mention}\n",
+            color=discord.Color.yellow(),
+            guild=interaction.guild
         )

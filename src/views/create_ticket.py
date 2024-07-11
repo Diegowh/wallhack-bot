@@ -1,3 +1,5 @@
+import discord
+
 from . import *
 from .close_ticket import CloseTicket
 
@@ -59,4 +61,11 @@ class CreateTicket(discord.ui.View):
                 color=discord.Color.blurple()
             ),
             ephemeral=True
+        )
+
+        await send_log(
+            title="Ticket created",
+            description=f"Created by {interaction.user.mention}",
+            color=discord.Color.green(),
+            guild=interaction.guild
         )
