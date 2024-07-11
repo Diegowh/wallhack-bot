@@ -2,8 +2,7 @@ import discord
 from discord.ext import commands
 from views.create_ticket import CreateTicket
 
-MEMBER_ROLE_ID = 1260630870109454337
-TEST_ROLE_ID = 1260632674440056863
+MEMBER_ROLE_ID = 1260548665148444722
 
 
 class Ticket(commands.Cog):
@@ -30,3 +29,5 @@ class Ticket(commands.Cog):
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(Ticket(bot))
+
+
