@@ -6,6 +6,7 @@ import discord
 
 from config.config import (
     PRODUCTION_BOT_TOKEN,
+    DEVELOPMENT_BOT_TOKEN,
 )
 from core.bot import Bot
 
