@@ -17,3 +17,4 @@ starlette==0.37.2
 typing_extensions==4.10.0
 urllib3==2.2.2
 yarl==1.9.4
+colorama~=0.4.6
