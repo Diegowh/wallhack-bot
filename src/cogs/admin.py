@@ -14,16 +14,16 @@ class Admin(commands.Cog):
         author_role_ids = [role.id for role in ctx.author.roles]
         return ctx.author.guild_permissions.administrator or self.settings.get("admin_role_id") in author_role_ids
 
-    @commands.command(name=CommandName.SETTINGS)
-    async def settings(self, ctx: commands.Context, *args):
-
-        if not self.is_admin(ctx):
-            return
-
-        if not args:
-            # Show actual settings
-            await self._show_settings(ctx)
-            return
+    # @commands.command(name=CommandName.SETTINGS)
+    # async def settings(self, ctx: commands.Context, *args):
+    #
+    #     if not self.is_admin(ctx):
+    #         return
+    #
+    #     if not args:
+    #         # Show actual settings
+    #         await self._show_settings(ctx)
+    #         return
 
     async def _show_settings(self, ctx: commands.Context):
         embed = self._create_settings_embed()
