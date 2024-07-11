@@ -26,7 +26,7 @@ class ARKServer:
     def server_ip_list(self):
         return self.serverlist_querier.official_server_box_ips()
     
-    def map_data_by_number(self, number: str):
+    async def map_data_by_number(self, number: str):
         map_number = MapNumber(num=number).num  # Validate the map number
         map_ip = None
         map_name = None
@@ -43,7 +43,7 @@ class ARKServer:
         if not map_ip or not map_name:
             raise MapNotFoundError
         
-        server_box_data = self.epic_querier.fetch(map_ip)
+        server_box_data = await self.epic_querier.fetch(map_ip)
         for session in server_box_data["sessions"]:
             if map_name in session["attributes"]["CUSTOMSERVERNAME_s"]:
                 return session

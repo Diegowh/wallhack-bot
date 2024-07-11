@@ -70,6 +70,6 @@ class ServerData:
         assert is_valid_map_number(map_number)
 
         try:
-            return self.ark_server.map_data_by_number(map_number)
+            return await self.ark_server.map_data_by_number(map_number)
         except (MapNotFoundError, ServerSessionNotFoundError):
             return None

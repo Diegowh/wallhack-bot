@@ -1,6 +1,7 @@
 from base64 import b64encode
 
-import requests
+import aiohttp
+
 from config.config import (
     CLIENT_ID,
     CLIENT_SECRET,
@@ -20,8 +21,7 @@ class EpicGamesServerQuerier(Querier):
         self.epic_api = EPIC_API
         self.access_token = None
 
-
-    def get_client_access_token(self):
+    async def get_client_access_token(self):
         url = f"{self.epic_api}/auth/v1/oauth/token"
         auth = b64encode(f"{self.client_id}:{self.client_secret}".encode()).decode()
         headers = {
@@ -32,13 +32,22 @@ class EpicGamesServerQuerier(Querier):
             'grant_type': 'client_credentials',
             'deployment_id': self.deployment_id
         }
-        response = requests.post(url, headers=headers, data=body)
-        if response.status_code == 200:
-            self.access_token = response.json().get('access_token')
-        else:
-            print(f"Failed to obtain access token: {response.text}")
 
-    def _query_info(self, ip_address):
+        async with aiohttp.ClientSession() as session:
+            async with session.post(
+                url=url,
+                headers=headers,
+                data=body,
+            ) as response:
+
+                if response.status == 200:
+                    data = await response.json()
+                    self.access_token = data.get("access_token")
+
+                else:
+                    print(f"Failed to obtain access token: {await response.text()}")
+
+    async def _query_info(self, ip_address):
         """
         Query server information using the Epic Games API.
         """
@@ -62,16 +71,23 @@ class EpicGamesServerQuerier(Querier):
                 # Add other relevant criteria as needed
             ]
         }
-        response = requests.post(url, headers=headers, json=payload)
-        if response.status_code == 200:
-            return response.json()  # Process this as needed
-        else:
-            print(f"Failed to query server information: {response.text}")
-            return None
-    
-    def fetch(self, ip):
+
+        async with aiohttp.ClientSession() as session:
+            async with session.post(
+                url=url,
+                headers=headers,
+                json=payload,
+            ) as response:
+
+                if response.status == 200:
+                    return await response.json()
+                else:
+                    print(f"Failed to query server information> {await response.text()}")
+                    return None
+
+    async def fetch(self, ip):
         """
         Fetch server information using the Epic Games API.
         """
-        self.get_client_access_token()
-        return self._query_info(ip)
+        await self.get_client_access_token()
+        return await self._query_info(ip)
