@@ -189,3 +189,4 @@ pip-selfcheck.json
 v2.0 wallhack-bot.zip
 *.sh
 wallhack-bot.zip
+src/cogs/ticket2.py
