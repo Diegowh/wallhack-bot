@@ -14,11 +14,14 @@ from utils import setup_logging, BOT_SHUT_DOWN_MESSAGE
 
 
 async def main():
-
-    discord.utils.setup_logging()
+    setup_logging()
     async with Bot() as bot:
         await bot.start(PRODUCTION_BOT_TOKEN, reconnect=True)
 
 
 if __name__ == '__main__':
-    asyncio.run(main())
+    colorama.init()
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        print(BOT_SHUT_DOWN_MESSAGE)
