@@ -1,4 +1,5 @@
 import logging
+import subprocess
 import time
 from enum import StrEnum
 from typing import Any, Union
@@ -136,3 +137,12 @@ def setup_logging():
 
 
 BOT_SHUT_DOWN_MESSAGE  = f"{Style.BRIGHT}[{time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())}]{Fore.GREEN} [INFO] {Fore.LIGHTWHITE_EX}Bot has been shut down"
+
+
+def get_current_branch():
+    try:
+        branch = subprocess.check_output(["git", "rev-parse", "--abbrev-ref", "HEAD"]).strip().decode('utf-8')
+        return branch
+    except subprocess.CalledProcessError as e:
+        print(f"Error while getting the current branch: {e}")
+        return None

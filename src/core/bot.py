@@ -47,11 +47,10 @@ class Bot(commands.AutoShardedBot):
         self.settings_file_dir = os.path.join(self.script_dir, "settings.json")
 
         self.message_ids = {}
-        self.servers_pop_channel = None
-        self.settings = None
-        self.state = None
+        self.servers_pop_channel: discord.ChannelType.text | None = None
+        self.settings: dict | None = None
 
-        self.maps_to_check = ["2154", "2421"]
+        self.maps_to_check: list[str] = ["2154", "2421"]
 
     async def on_ready(self) -> None:
         log.info(f"logged in as {Fore.YELLOW}{self.user}{Style.RESET_ALL}")
@@ -65,7 +64,7 @@ class Bot(commands.AutoShardedBot):
         self.add_view(CreateTicket())
         self.add_view(CloseTicket())
         self.add_view(DeleteTicket())
-        print("Views has been added.")
+        log.info(f"Views added {Fore.YELLOW}{len(self.persistent_views)} Views{Style.RESET_ALL}")
 
         # Delete servers pop channel old msg
         self.servers_pop_channel = self.get_channel(1258888031285542992)
@@ -175,7 +174,7 @@ class Bot(commands.AutoShardedBot):
     async def load_extensions(self):
         for root, _, files in os.walk("src/cogs"):
             for file in files:
-                if file.endswith(".py") and file != "__init__.py":
+                if file.endswith(".py") and file not in ["__init__.py", "utils.py"]:
 
                     extension = os.path.join(root, file)
                     extension = extension.replace("/", ".").replace("\\", ".")

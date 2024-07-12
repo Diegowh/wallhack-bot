@@ -13,16 +13,10 @@ class ServerScanner(commands.Cog):
         self.bot = bot
         self.settings = self.bot.settings.get("values")
         self.server_data = ServerData()
-        self.autopop_task = None
 
-        self.check_status_task = None
-        self.server_was_down = False
-        self.status_map_number = None
-        self.status_interaction = None
-
-    @commands.Cog.listener()
-    async def on_ready(self):
-        print(f"{self} cog on ready called!")
+        self.server_was_down: bool = False
+        self.status_map_number: str | None = None
+        self.status_interaction: discord.Interaction | None = None
 
     async def delete_previous_messages(self, ctx: commands.Context, limit):
         async for message in ctx.channel.history(limit=limit):
@@ -65,8 +59,10 @@ class ServerScanner(commands.Cog):
         if is_down:
             self.server_was_down = True
         elif self.server_was_down:
-            member_role = f"<@&{self.settings.get('role_id_to_tag')}>"
-            await self.status_interaction.followup.send(f"{member_role} {self.status_map_number} is up!")
+            member_role_id = self.settings.get('role_id_to_tag')
+            role: discord.Role = discord.utils.get(self.status_interaction.guild.roles, id=int(member_role_id))
+            await self.status_interaction.followup.send(f"{role.mention} {self.status_map_number} is up!")
+            self.server_was_down = False
             self.check_status.cancel()
 
     @check_status.before_loop

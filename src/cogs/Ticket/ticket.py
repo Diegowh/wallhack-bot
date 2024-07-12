@@ -5,9 +5,6 @@ from views.create_ticket import CreateTicket
 from utils import CommandName
 
 
-MEMBER_ROLE_ID = 1260548665148444722
-
-
 class Ticket(commands.Cog):
 
     def __init__(self, bot: commands.Bot) -> None:
