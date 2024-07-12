@@ -175,7 +175,7 @@ class Bot(commands.AutoShardedBot):
     async def load_extensions(self):
         for root, _, files in os.walk("src/cogs"):
             for file in files:
-                if file.endswith(".py") and file != "__init__.py":
+                if file.endswith(".py") and file not in ["__init__.py", "utils.py"]:
 
                     extension = os.path.join(root, file)
                     extension = extension.replace("/", ".").replace("\\", ".")
