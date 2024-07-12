@@ -13,16 +13,10 @@ class ServerScanner(commands.Cog):
         self.bot = bot
         self.settings = self.bot.settings.get("values")
         self.server_data = ServerData()
-        self.autopop_task = None
 
-        self.check_status_task = None
-        self.server_was_down = False
-        self.status_map_number = None
-        self.status_interaction = None
-
-    @commands.Cog.listener()
-    async def on_ready(self):
-        print(f"{self} cog on ready called!")
+        self.server_was_down: bool = False
+        self.status_map_number: str | None = None
+        self.status_interaction: discord.Interaction | None = None
 
     async def delete_previous_messages(self, ctx: commands.Context, limit):
         async for message in ctx.channel.history(limit=limit):
