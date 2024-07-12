@@ -4,7 +4,6 @@ from starlette.config import Config
 config = Config(".env")
 
 
-
 DEBUG: bool = config("DEBUG", cast=bool, default=False)
 CLIENT_ID= config("CLIENT_ID")
 CLIENT_SECRET= config("CLIENT_SECRET")
@@ -15,3 +14,5 @@ SERVERLIST_URL = "https://cdn2.arkdedicated.com/servers/asa/officialserverlist.j
 # Discord
 DEVELOPMENT_BOT_TOKEN = config("DEVELOPMENT_BOT_TOKEN")
 PRODUCTION_BOT_TOKEN = config("PRODUCTION_BOT_TOKEN")
+
+GOOGLE_API_KEY = config("GOOGLE_API_KEY")
