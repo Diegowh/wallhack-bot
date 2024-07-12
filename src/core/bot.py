@@ -65,7 +65,7 @@ class Bot(commands.AutoShardedBot):
         self.add_view(CreateTicket())
         self.add_view(CloseTicket())
         self.add_view(DeleteTicket())
-        print("Views has been added.")
+        log.info(f"Views added {Fore.YELLOW}{len(self.persistent_views)} Views{Style.RESET_ALL}")
 
         # Delete servers pop channel old msg
         self.servers_pop_channel = self.get_channel(1258888031285542992)
