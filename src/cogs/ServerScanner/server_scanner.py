@@ -59,8 +59,10 @@ class ServerScanner(commands.Cog):
         if is_down:
             self.server_was_down = True
         elif self.server_was_down:
-            member_role = f"<@&{self.settings.get('role_id_to_tag')}>"
-            await self.status_interaction.followup.send(f"{member_role} {self.status_map_number} is up!")
+            member_role_id = self.settings.get('role_id_to_tag')
+            role: discord.Role = discord.utils.get(self.status_interaction.guild.roles, id=int(member_role_id))
+            await self.status_interaction.followup.send(f"{role.mention} {self.status_map_number} is up!")
+            self.server_was_down = False
             self.check_status.cancel()
 
     @check_status.before_loop
