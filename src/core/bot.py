@@ -47,11 +47,10 @@ class Bot(commands.AutoShardedBot):
         self.settings_file_dir = os.path.join(self.script_dir, "settings.json")
 
         self.message_ids = {}
-        self.servers_pop_channel = None
-        self.settings = None
-        self.state = None
+        self.servers_pop_channel: discord.ChannelType.text | None = None
+        self.settings: dict | None = None
 
-        self.maps_to_check = ["2154", "2421"]
+        self.maps_to_check: list[str] = ["2154", "2421"]
 
     async def on_ready(self) -> None:
         log.info(f"logged in as {Fore.YELLOW}{self.user}{Style.RESET_ALL}")
