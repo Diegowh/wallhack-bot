@@ -2,12 +2,12 @@ import time
 
 import discord
 
-from api.controllers.ARKServer import ARKServer
-from exceptions.exceptions import (
+from src.api.controllers.ARKServer import ARKServer
+from src.exceptions.exceptions import (
     MapNotFoundError,
     ServerSessionNotFoundError
 )
-from utils import is_valid_map_number
+from src.utils import is_valid_map_number
 
 
 class ServerData:
