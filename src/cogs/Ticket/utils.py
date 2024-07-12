@@ -1,6 +1,6 @@
 import discord
 
-LOGS_CHANNEL_ID = 1260724325556814025
+LOGS_CHANNEL_ID = 1261351522227458049
 
 
 async def send_log(title: str, guild: discord.Guild, description: str, color: discord.Color):
