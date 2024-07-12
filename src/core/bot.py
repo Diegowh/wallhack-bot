@@ -10,13 +10,13 @@ from typing import Optional
 import discord
 from colorama import Fore, Back, Style
 from discord.ext import commands, tasks
-from server_data import ServerData
-from settings import default_settings
+from src.server_data import ServerData
+from src.settings import default_settings
 
-from .embed import Embed
-from views.close_ticket import CloseTicket
-from views.create_ticket import CreateTicket
-from views.delete_ticket import DeleteTicket
+from src.core.embed import Embed
+from src.views.close_ticket import CloseTicket
+from src.views.create_ticket import CreateTicket
+from src.views.delete_ticket import DeleteTicket
 
 log = getLogger("Bot")
 
@@ -178,7 +178,7 @@ class Bot(commands.AutoShardedBot):
 
                     extension = os.path.join(root, file)
                     extension = extension.replace("/", ".").replace("\\", ".")
-                    extension = extension[4:-3]  # Elimina src/ y .py
+                    extension = extension[:-3]  # Elimina .py
 
                     try:
                         await self.load_extension(extension)

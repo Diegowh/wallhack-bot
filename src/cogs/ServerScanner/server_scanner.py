@@ -3,8 +3,8 @@ import asyncio
 import discord
 from discord import app_commands
 from discord.ext import commands, tasks
-from server_data import ServerData
-from utils import CommandName
+from src.server_data import ServerData
+from src.utils import CommandName
 
 
 class ServerScanner(commands.Cog):

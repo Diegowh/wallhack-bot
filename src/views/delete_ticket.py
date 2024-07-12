@@ -1,6 +1,6 @@
 import discord
 
-from . import *
+from src.views import *
 
 
 class DeleteTicket(discord.ui.View):

@@ -1,2 +1,2 @@
-from .bot import *
-from .embed import *
+from src.core.bot import *
+from src.core.embed import *

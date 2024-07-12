@@ -2,7 +2,7 @@ import asyncio
 
 import discord
 from discord.ext import commands
-from cogs.Ticket.utils import send_log
+from src.cogs.Ticket.utils import send_log
 
 
 OPENED_TICKETS_CATEGORY_ID = 1261343715318960270

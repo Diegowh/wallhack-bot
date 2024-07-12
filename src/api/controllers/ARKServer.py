@@ -1,7 +1,7 @@
-from api.controllers.EpicGamesServerQuerier import EpicGamesServerQuerier
-from api.controllers.ServerlistQuerier import ServerlistQuerier
-from api.schemas.MapNumber import MapNumber
-from exceptions.exceptions import (
+from src.api.controllers.EpicGamesServerQuerier import EpicGamesServerQuerier
+from src.api.controllers.ServerlistQuerier import ServerlistQuerier
+from src.api.schemas.MapNumber import MapNumber
+from src.exceptions.exceptions import (
     MapNotFoundError,
     ServerSessionNotFoundError
 )

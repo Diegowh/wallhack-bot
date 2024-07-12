@@ -2,7 +2,7 @@ import random
 
 import discord
 from discord.ext import commands
-from utils import MENTION_RESPONSES
+from src.utils import MENTION_RESPONSES
 
 
 class Interactions(commands.Cog):
