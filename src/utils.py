@@ -15,9 +15,11 @@ def _validate_strenum_value(value: str):
     """
     if not isinstance(value, str):
         raise TypeError(f"Expected string, got {type(value).__name__}")
-        
+
+
 def time_to_unix(addHours: int) -> int:
     return time.time() + addHours*60*60    
+
 
 class CommandName(StrEnum):
     AUTOPOP = "autopop"
@@ -26,6 +28,7 @@ class CommandName(StrEnum):
     HELP = "help"
     SETTINGS = "settings"
     CLAIMS = "claims"
+    TICKET = "ticket"
 
     @classmethod
     def _missing_(cls, value: str) -> Any:
