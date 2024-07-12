@@ -1,0 +1,12 @@
+import asyncio
+
+import discord
+from discord.ext import commands
+from cogs.Ticket.utils import send_log
+
+
+OPENED_TICKETS_CATEGORY_ID = 1260547192284905593
+CLOSED_TICKETS_CATEGORY_ID = 1260547219891818528
+MEMBER_ROLE_ID = 1260548665148444722
+TEST_ROLE_ID = 1260632674440056863
+

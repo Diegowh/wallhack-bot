@@ -7,7 +7,8 @@ import colorama
 from colorama import Fore, Back, Style
 
 from config.config import (
-    DEVELOPMENT_BOT_TOKEN,
+    PRODUCTION_BOT_TOKEN,
+    DEVELOPMENT_BOT_TOKEN
 )
 from core.bot import Bot
 from utils import setup_logging, BOT_SHUT_DOWN_MESSAGE

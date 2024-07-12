@@ -24,6 +24,7 @@ def time_to_unix(addHours: int) -> int:
     return time.time() + addHours * 60 * 60
 
 
+
 class CommandName(StrEnum):
     AUTOPOP = "autopop"
     POP = "pop"
@@ -31,6 +32,7 @@ class CommandName(StrEnum):
     HELP = "help"
     SETTINGS = "settings"
     CLAIMS = "claims"
+    TICKET = "ticket"
 
     @classmethod
     def _missing_(cls, value: str) -> Any:

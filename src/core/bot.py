@@ -14,6 +14,9 @@ from server_data import ServerData
 from settings import default_settings
 
 from .embed import Embed
+from views.close_ticket import CloseTicket
+from views.create_ticket import CreateTicket
+from views.delete_ticket import DeleteTicket
 
 log = getLogger("Bot")
 
@@ -58,6 +61,11 @@ class Bot(commands.AutoShardedBot):
 
         synced = await self.tree.sync()
         log.info(f"Slash CMDs Synced {Fore.YELLOW}{str(len(synced))} Commands{Style.RESET_ALL}")
+
+        self.add_view(CreateTicket())
+        self.add_view(CloseTicket())
+        self.add_view(DeleteTicket())
+        print("Views has been added.")
 
         # Delete servers pop channel old msg
         self.servers_pop_channel = self.get_channel(1258888031285542992)
@@ -165,13 +173,17 @@ class Bot(commands.AutoShardedBot):
             log.info("Settings saved")
 
     async def load_extensions(self):
-        for filename in os.listdir("src/cogs"):
-            if filename == "__pycache__":
-                pass
-            elif filename.endswith('.py') and filename not in ["__init__.py", "utils.py", "error.py"]:
-                try:
-                    await self.load_extension(f'cogs.{filename[:-3]}')
-                    log.info(f'Loaded extension {Fore.YELLOW}{filename[:-3]}{Style.RESET_ALL}')
-                except Exception as e:
-                    log.error(f'Failed to load extension {Fore.YELLOW}{filename[:-3]}{Style.RESET_ALL}')
-                    log.error(e)
+        for root, _, files in os.walk("src/cogs"):
+            for file in files:
+                if file.endswith(".py") and file != "__init__.py":
+
+                    extension = os.path.join(root, file)
+                    extension = extension.replace("/", ".").replace("\\", ".")
+                    extension = extension[4:-3]  # Elimina src/ y .py
+
+                    try:
+                        await self.load_extension(extension)
+                        log.info(f"Loaded extension {Fore.YELLOW}{extension}{Style.RESET_ALL}")
+                    except Exception as e:
+                        log.error(f"Failed to load extension {Fore.YELLOW}{extension}{Style.RESET_ALL}")
+                        log.error(e)
