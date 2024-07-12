@@ -1,11 +1,13 @@
 from __future__ import annotations
+
 from typing import Optional, Union
+
 from discord import Colour, Embed as OriginalEmbed
-from typing_extensions import Self
 
 __all__ = (
     "Embed",
 )
+
 
 class Embed(OriginalEmbed):
 

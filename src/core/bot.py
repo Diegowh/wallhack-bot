@@ -3,20 +3,30 @@ from __future__ import annotations
 import asyncio
 import json
 import os
+import time
 from logging import getLogger
 from typing import Optional
 
 import discord
-from bot_state import BotState
+from colorama import Fore, Back, Style
 from discord.ext import commands, tasks
 from server_data import ServerData
 from settings import default_settings
+
 from .embed import Embed
 
 log = getLogger("Bot")
 
 __all__ = (
     "Bot",
+)
+
+prefix = (
+        Fore.GREEN +
+        f"[{time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())}]" +
+        Back.RESET +
+        Fore.WHITE +
+        Style.BRIGHT
 )
 
 
@@ -41,12 +51,13 @@ class Bot(commands.AutoShardedBot):
         self.maps_to_check = ["2154", "2421"]
 
     async def on_ready(self) -> None:
-        log.info(f"logged in as {self.user}")
+        log.info(f"logged in as {Fore.YELLOW}{self.user}{Style.RESET_ALL}")
 
         self.settings = self.load_or_create_settings()
         await self.load_extensions()
-        self.state = BotState(self)
-        self.state.sync()
+
+        synced = await self.tree.sync()
+        log.info(f"Slash CMDs Synced {Fore.YELLOW}{str(len(synced))} Commands{Style.RESET_ALL}")
 
         # Delete servers pop channel old msg
         self.servers_pop_channel = self.get_channel(1258888031285542992)
@@ -142,16 +153,16 @@ class Bot(commands.AutoShardedBot):
 
     def load_or_create_settings(self) -> dict:
         if not os.path.exists(self.settings_file_dir):
-            print("Settings file not found, creating new one...")
+            log.warning("Settings file not found, creating new one...")
             self.save_settings(default_settings)
         with open(self.settings_file_dir, "r") as file:
-            print("Settings loaded")
+            log.info("Settings loaded")
             return json.load(file)
 
     def save_settings(self, settings: dict) -> None:
         with open(self.settings_file_dir, "w") as file:
             json.dump(settings, file, indent=4)
-            print("Settings saved")
+            log.info("Settings saved")
 
     async def load_extensions(self):
         for filename in os.listdir("src/cogs"):
@@ -160,8 +171,7 @@ class Bot(commands.AutoShardedBot):
             elif filename.endswith('.py') and filename not in ["__init__.py", "utils.py", "error.py"]:
                 try:
                     await self.load_extension(f'cogs.{filename[:-3]}')
-                    print(f'Loaded extension {filename[:-3]}')
+                    log.info(f'Loaded extension {Fore.YELLOW}{filename[:-3]}{Style.RESET_ALL}')
                 except Exception as e:
-                    print(f'Failed to load extension {filename[:-3]}')
-                    print(e)
-
+                    log.error(f'Failed to load extension {Fore.YELLOW}{filename[:-3]}{Style.RESET_ALL}')
+                    log.error(e)

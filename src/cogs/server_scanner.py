@@ -1,6 +1,7 @@
 import asyncio
-import time
 
+import discord
+from discord import app_commands
 from discord.ext import commands, tasks
 from server_data import ServerData
 from utils import CommandName
@@ -17,37 +18,41 @@ class ServerScanner(commands.Cog):
         self.check_status_task = None
         self.server_was_down = False
         self.status_map_number = None
-        self.status_ctx = None
+        self.status_interaction = None
+
+    @commands.Cog.listener()
+    async def on_ready(self):
+        print(f"{self} cog on ready called!")
 
     async def delete_previous_messages(self, ctx: commands.Context, limit):
         async for message in ctx.channel.history(limit=limit):
             if message.id != self.settings.get("autopop_to_preserve_msg_id"):
                 await message.delete()
 
-    @commands.command(name=CommandName.POP)
-    async def pop(self, ctx: commands.Context, map_number):
+    @app_commands.command(name=CommandName.POP)
+    async def pop(self, interaction: discord.Interaction, map_number: str):
 
         pop_msg = await self.server_data.pop(map_number)
 
-        await ctx.send(embed=pop_msg)
+        await interaction.response.send_message(embed=pop_msg)
 
-    @commands.command(name=CommandName.STATUS)
-    async def status(self, ctx: commands.Context, map_number: str):
+    @app_commands.command(name=CommandName.STATUS)
+    async def status(self, interaction: discord.Interaction, map_number: str):
         self.status_map_number = map_number
-        self.status_ctx = ctx
+        self.status_interaction = interaction
 
         if self.check_status.is_running():
-            await ctx.send("Status check is already running.")
+            await interaction.response.send_message("Status check is already running.")
             return
 
         self.server_was_down = False
         self.check_status.start()
 
-        await ctx.send(f"Started checking status for server {self.status_map_number}...")
+        await interaction.response.send_message(f"Started checking status for server {self.status_map_number}...")
 
         await asyncio.sleep(300)  # Le doy 5 minutos por si ha sido un uso indebido del comando
         if not self.server_was_down:
-            await ctx.send(f"The server {map_number} is still up, try again.")
+            await interaction.response.send_message(f"The server {map_number} is still up, try again.")
             self.check_status.cancel()
 
     async def is_server_down(self, map_number) -> bool:
@@ -61,7 +66,7 @@ class ServerScanner(commands.Cog):
             self.server_was_down = True
         elif self.server_was_down:
             member_role = f"<@&{self.settings.get('role_id_to_tag')}>"
-            await self.status_ctx.send(f"{member_role} {self.status_map_number} is up!")
+            await self.status_interaction.followup.send(f"{member_role} {self.status_map_number} is up!")
             self.check_status.cancel()
 
     @check_status.before_loop

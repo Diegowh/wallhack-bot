@@ -1,7 +1,6 @@
 from base64 import b64encode
 
 import aiohttp
-
 from config.config import (
     CLIENT_ID,
     CLIENT_SECRET,

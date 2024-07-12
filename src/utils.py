@@ -1,6 +1,9 @@
+import logging
 import time
 from enum import StrEnum
 from typing import Any, Union
+
+from colorama import Fore, Style
 
 
 def _validate_strenum_value(value: str):
@@ -15,9 +18,11 @@ def _validate_strenum_value(value: str):
     """
     if not isinstance(value, str):
         raise TypeError(f"Expected string, got {type(value).__name__}")
-        
+
+
 def time_to_unix(addHours: int) -> int:
-    return time.time() + addHours*60*60    
+    return time.time() + addHours * 60 * 60
+
 
 class CommandName(StrEnum):
     AUTOPOP = "autopop"
@@ -48,12 +53,12 @@ class BotTokenName(StrEnum):
         for member in cls:
             if member == value:
                 return member
-            
-            
+
+
 class AutopopArg(StrEnum):
     ON = "on"
     OFF = "off"
-    
+
     @classmethod
     def _missing_(cls, value: str) -> Any:
         _validate_strenum_value(value)
@@ -62,6 +67,7 @@ class AutopopArg(StrEnum):
             if member == value:
                 return member
         return None
+
 
 # def is_valid_map_number(number: Union[str, int]) -> bool:
 #     number = str(number)
@@ -101,3 +107,30 @@ MENTION_RESPONSES = [
     "uwu",
     "que te den"
 ]
+
+
+class CustomFormatter(logging.Formatter):
+    FORMATS = {
+        logging.DEBUG: f"{Style.BRIGHT}[%(asctime)s]{Fore.BLUE} [%(levelname)s] {Style.RESET_ALL}{Style.BRIGHT}%(message)s",
+        logging.INFO: f"{Style.BRIGHT}[%(asctime)s]{Fore.GREEN} [%(levelname)s] {Style.RESET_ALL}{Style.BRIGHT}%(message)s",
+        logging.WARNING: f"{Style.BRIGHT}[%(asctime)s]{Fore.YELLOW} [%(levelname)s] {Style.RESET_ALL}{Style.BRIGHT}%(message)s",
+        logging.ERROR: f"{Style.BRIGHT}[%(asctime)s]{Fore.RED} [%(levelname)s] {Style.RESET_ALL}{Style.BRIGHT}%(message)s",
+        logging.CRITICAL: f"{Style.BRIGHT}[%(asctime)s]{Fore.RED} [%(levelname)s] {Style.RESET_ALL}{Style.BRIGHT}%(message)s"
+    }
+
+    def format(self, record):
+        log_format = self.FORMATS.get(record.levelno)
+        formatter = logging.Formatter(log_format, datefmt='%Y-%m-%d %H:%M:%S')
+        return formatter.format(record)
+
+
+def setup_logging():
+    logger = logging.getLogger("Bot")
+    logger.setLevel(logging.DEBUG)
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.DEBUG)
+    ch.setFormatter(CustomFormatter())
+    logger.addHandler(ch)
+
+
+BOT_SHUT_DOWN_MESSAGE  = f"{Style.BRIGHT}[{time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())}]{Fore.GREEN} [INFO] {Fore.LIGHTWHITE_EX}Bot has been shut down"
