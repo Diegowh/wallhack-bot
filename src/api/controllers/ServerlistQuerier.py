@@ -3,7 +3,7 @@ import json
 import requests
 from src.config.config import SERVERLIST_URL
 
-from .Querier import Querier
+from src.api.controllers.Querier import Querier
 
 
 class ServerlistQuerier(Querier):
