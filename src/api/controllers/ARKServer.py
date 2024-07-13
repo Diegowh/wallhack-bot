@@ -1,7 +1,7 @@
-from api.controllers.EpicGamesServerQuerier import EpicGamesServerQuerier
-from api.controllers.ServerlistQuerier import ServerlistQuerier
-from api.schemas.MapNumber import MapNumber
-from exceptions.exceptions import (
+from src.api.controllers.EpicGamesServerQuerier import EpicGamesServerQuerier
+from src.api.controllers.ServerlistQuerier import ServerlistQuerier
+from src.api.schemas.MapNumber import MapNumber
+from src.exceptions.exceptions import (
     MapNotFoundError,
     ServerSessionNotFoundError
 )
@@ -34,18 +34,22 @@ class ARKServer:
         # Find the map number
         map_ips = self.serverlist_querier.get_all_server_maps()
         for ip, box_maps in map_ips.items():
-            for map in box_maps:
-                if map_number in map:
+            for map_ in box_maps:
+                if map_number in map_:
                     map_ip = ip
-                    map_name = map
+                    map_name = map_
+                    print("Map name successfully found")
                     break
         
         if not map_ip or not map_name:
             raise MapNotFoundError
-        
+
+        print(f"Map IP: {map_ip}")
         server_box_data = await self.epic_querier.fetch(map_ip)
+        print(server_box_data)
         for session in server_box_data["sessions"]:
             if map_name in session["attributes"]["CUSTOMSERVERNAME_s"]:
+                print("map name found in session")
                 return session
 
         raise ServerSessionNotFoundError

@@ -1,15 +1,14 @@
 from __future__ import annotations
 
 import asyncio
-from utils import get_current_branch
 import colorama
 
-from config.config import (
+from src.config.config import (
     PRODUCTION_BOT_TOKEN,
     DEVELOPMENT_BOT_TOKEN
 )
-from core.bot import Bot
-from utils import setup_logging, BOT_SHUT_DOWN_MESSAGE
+from src.core.bot import Bot
+from src.utils import setup_logging, get_current_branch, BOT_SHUT_DOWN_MESSAGE
 
 
 async def main():

@@ -1,7 +1,7 @@
 import discord
 
-from . import *
-from .close_ticket import CloseTicket
+from src.views import *
+from src.views.close_ticket import CloseTicket
 
 
 class CreateTicket(discord.ui.View):

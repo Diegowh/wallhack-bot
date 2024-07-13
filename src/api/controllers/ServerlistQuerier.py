@@ -1,9 +1,9 @@
 import json
 
 import requests
-from config.config import SERVERLIST_URL
+from src.config.config import SERVERLIST_URL
 
-from .Querier import Querier
+from src.api.controllers.Querier import Querier
 
 
 class ServerlistQuerier(Querier):
@@ -13,7 +13,7 @@ class ServerlistQuerier(Querier):
     def __init__(self) -> None:
         self.official_server_list_url = SERVERLIST_URL
     
-    def fetch(self) -> list[dict]:
+    def fetch(self) -> list[dict] | None:
         """
         Fetches the official server list data.
         """

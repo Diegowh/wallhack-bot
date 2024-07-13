@@ -1,8 +1,8 @@
 import discord
 from discord import app_commands
 from discord.ext import commands
-from views.create_ticket import CreateTicket
-from utils import CommandName
+from src.views.create_ticket import CreateTicket
+from src.utils import CommandName
 
 
 class Ticket(commands.Cog):

@@ -1,4 +1,4 @@
-from exceptions.exceptions import (
+from src.exceptions.exceptions import (
     InvaidMapNumberTypeError,
     NonDigitMapNumberError,
     InvalidMapNumberLengthError,
