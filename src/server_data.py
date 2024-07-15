@@ -25,7 +25,7 @@ class ServerData:
         embed.add_field(name="Last update", value=time_now, inline=True)
         return embed
 
-    async def pop(self, map_number: int) -> discord.Embed:
+    async def pop(self, map_number: str) -> discord.Embed:
         if not is_valid_map_number(map_number):
 
             embed = self.create_error_embed(
