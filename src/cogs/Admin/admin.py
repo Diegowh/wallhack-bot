@@ -15,7 +15,7 @@ class Admin(commands.Cog):
 
     @app_commands.command(name="restart", description="Restarts the bot.")
     async def restart(self, interaction: discord.Interaction):
-        await interaction.response.send_message("Reiniciando el bot...", ephemeral=True)
+        await interaction.response.send_message("Restarting bot...", ephemeral=True)
         os.execv(sys.executable, ['python'] + sys.argv)
 
 
