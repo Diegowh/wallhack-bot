@@ -9,6 +9,7 @@ from typing import Optional
 
 import discord
 from colorama import Fore, Back, Style
+from discord.errors import DiscordServerError
 from discord.ext import commands, tasks
 from src.server_data import ServerData
 from src.settings import default_settings
@@ -42,7 +43,7 @@ class Bot(commands.AutoShardedBot):
             chunk_guild_at_startup=False
         )
 
-        self.server_data_manager = None
+        self.server_data_manager = ServerData()
         self.script_dir = os.path.dirname(os.path.abspath(__file__))
         self.settings_file_dir = os.path.join(self.script_dir, "settings.json")
 
@@ -124,39 +125,45 @@ class Bot(commands.AutoShardedBot):
 
     @tasks.loop(seconds=30)
     async def start_auto_pop(self):
-        self.server_data_manager = ServerData()
 
-        self.servers_pop_channel = self.get_channel(1258888031285542992)
+        try:
+            self.servers_pop_channel = self.get_channel(1258888031285542992)
 
-        if self.servers_pop_channel is None:
-            self.start_auto_pop.cancel()
+            if self.servers_pop_channel is None:
+                log.error("Failed to get servers_pop_channel. Cancelling autopop task.")
+                self.start_auto_pop.cancel()
+                return
 
-        for map_number in self.maps_to_check:
+            for map_number in self.maps_to_check:
+                await self.get_map_data(map_number)
 
-            map_data = await self.server_data_manager.fetch_map_data(map_number=map_number)
-            await asyncio.sleep(2)
+        except (DiscordServerError, Exception) as e:
+            log.exception(f"Error in start_auto_pop: {e}, retrying loop in 180 seconds...")
+            await asyncio.sleep(180)
 
-            if map_data is None:
-                embed = self.server_data_manager.create_error_embed(
-                    title="Server not found",
-                    description="Server is down"
-                )
-                if map_number in self.message_ids:
-                    message = await self.servers_pop_channel.fetch_message(self.message_ids[map_number])
-                    await message.edit(embed=embed)
+    async def get_map_data(self, map_number):
+        map_data = await self.server_data_manager.fetch_map_data(map_number=map_number)
+        await asyncio.sleep(2)
 
-                else:
-                    message = await self.servers_pop_channel.send(embed=embed)
-                    self.message_ids[map_number] = message.id
-            else:
-                pop_embed = self.server_data_manager.create_pop_message(map_data=map_data)
+        embed = (
+            self.server_data_manager.create_pop_message(map_data)
+            if map_data
+            else self.server_data_manager.create_error_embed(
+                title="Server not found",
+                description="Server is down"
+            )
+        )
 
-                if map_number in self.message_ids:
-                    message = await self.servers_pop_channel.fetch_message(self.message_ids[map_number])
-                    await message.edit(embed=pop_embed)
-                else:
-                    message = await self.servers_pop_channel.send(embed=pop_embed)
-                    self.message_ids[map_number] = message.id
+        await self.send_or_edit_message(map_number, embed)
+
+    async def send_or_edit_message(self, map_number, embed):
+        if map_number in self.message_ids:
+            message = await self.servers_pop_channel.fetch_message(self.message_ids[map_number])
+            await message.edit(embed=embed)
+
+        else:
+            message = await self.servers_pop_channel.send(embed=embed)
+            self.message_ids[map_number] = message.id
 
     def load_or_create_settings(self) -> dict:
         if not os.path.exists(self.settings_file_dir):
