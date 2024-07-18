@@ -1,5 +1,3 @@
-import discord
-
 from src.views import *
 from src.views.delete_ticket import DeleteTicket
 
