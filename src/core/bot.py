@@ -34,7 +34,7 @@ prefix = (
 )
 
 
-class Bot(commands.AutoShardedBot):
+class Bot(commands.Bot):
 
     def __init__(self):
         super().__init__(
