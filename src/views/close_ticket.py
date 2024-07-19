@@ -11,12 +11,10 @@ class CloseTicket(discord.ui.View):
     async def close(self, interaction: discord.Interaction, button: discord.ui.Button):
 
         await interaction.response.defer(ephemeral=True)
-
         await interaction.channel.send("Closing this ticket in 3 seconds!")
-
         await asyncio.sleep(3)
 
-        category: discord.CategoryChannel = discord.utils.get(
+        closed_category: discord.CategoryChannel = discord.utils.get(
             interaction.guild.categories,
             id=CLOSED_TICKETS_CATEGORY_ID
         )
@@ -30,7 +28,7 @@ class CloseTicket(discord.ui.View):
             member_role: discord.PermissionOverwrite(read_messages=False, send_messages=False, manage_messages=False),
             ticket_creator: discord.PermissionOverwrite(read_messages=True, send_messages=False, manage_messages=False)
         }
-        await interaction.channel.edit(category=category, overwrites=overwrites)
+        await interaction.channel.edit(category=closed_category, overwrites=overwrites)
         await interaction.channel.send(
             embed=discord.Embed(
                 description="Ticket Closed!",
