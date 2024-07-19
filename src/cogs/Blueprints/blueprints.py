@@ -14,7 +14,7 @@ class Blueprints(commands.Cog):
         self.selected_blueprint: str | None = None
         self.image_loader = ImageLoader()
 
-    @app_commands.command(name=CommandName.BP, description="Select a category or provide a specific item")
+    @app_commands.command(name=CommandName.BP, description="Press enter to select a category or provide a specific item")
     @app_commands.describe(item="Item to get its blueprints")
     async def bp(self, interaction: discord.Interaction, item: str = None):
 
