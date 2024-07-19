@@ -34,6 +34,8 @@ class CommandName(StrEnum):
     CLAIMS = "claims"
     TICKET = "ticket"
     BP = "bp"
+    ADD = "add"
+    REMOVE = "remove"
 
     @classmethod
     def _missing_(cls, value: str) -> Any:
