@@ -10,7 +10,7 @@ class Interactions(commands.Cog):
         self.bot = bot
         self.clown_emoji = "\U0001F921"
         self.hug_emoji = "\U0001FAC2"
-        self.concerned_monkey_gif = "https://images-ext-1.discordapp.net/external/1JiMrD8mBdzTooqPAxkc2LXU9bQphWlrNfimL27PHlY/https/media.tenor.com/2gyy4BcsLWsAAAPo/monkey-confused.mp4"
+        self.concerned_monkey_gif = "https://tenor.com/view/monkey-confused-gif-15712129875520007531"
         self.member_role_id = 492494724528340992
 
     @commands.Cog.listener()
