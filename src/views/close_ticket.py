@@ -24,8 +24,8 @@ class CloseTicket(discord.ui.View):
         ticket_creator = interaction.guild.get_member(ticket_creator_id)
 
         overwrites = {
-            interaction.guild.default_role: discord.PermissionOverwrite(read_messages=False),
-            member_role: discord.PermissionOverwrite(read_messages=False, send_messages=False, manage_messages=False),
+            # interaction.guild.default_role: discord.PermissionOverwrite(read_messages=False),
+            # member_role: discord.PermissionOverwrite(read_messages=False, send_messages=False, manage_messages=False),
             ticket_creator: discord.PermissionOverwrite(read_messages=True, send_messages=False, manage_messages=False)
         }
         await interaction.channel.edit(category=closed_category, overwrites=overwrites)

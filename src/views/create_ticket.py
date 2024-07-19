@@ -25,24 +25,24 @@ class CreateTicket(discord.ui.View):
         member_role: discord.Role = interaction.guild.get_role(MEMBER_ROLE_ID)
         admin_role = interaction.guild.get_role(ADMIN_ROLE_ID)
         overwrites = {
-            # interaction.guild.default_role: discord.PermissionOverwrite(read_messages=False),
-            member_role: discord.PermissionOverwrite(
-                view_channel=False,
-                read_messages=False,
-                send_messages=False,
-                manage_messages=False
-            ),
+            # # interaction.guild.default_role: discord.PermissionOverwrite(read_messages=False),
+            # member_role: discord.PermissionOverwrite(
+            #     view_channel=False,
+            #     read_messages=False,
+            #     send_messages=False,
+            #     manage_messages=False
+            # ),
             interaction.user: discord.PermissionOverwrite(
                 view_channel=True,
                 read_messages=True,
                 send_messages=True
             ),
-            admin_role: discord.PermissionOverwrite(
-                view_channel=True,
-                read_messages=True,
-                send_messages=True,
-                manage_messages=True
-            )
+            # admin_role: discord.PermissionOverwrite(
+            #     view_channel=True,
+            #     read_messages=True,
+            #     send_messages=True,
+            #     manage_messages=True
+            # )
         }
 
         channel = await category.create_text_channel(
