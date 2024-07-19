@@ -52,8 +52,9 @@ class CreateTicket(discord.ui.View):
         )
 
         await channel.send(
+            content=admin_role.mention,
             embed=discord.Embed(
-                title="Ticket Created!",
+                title=f"Ticket Created!",
                 description="Don't ping a staff member, they will be here soon.",
                 color=discord.Color.green()
             ),
