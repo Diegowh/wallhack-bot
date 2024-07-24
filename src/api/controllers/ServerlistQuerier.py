@@ -31,11 +31,7 @@ class ServerlistQuerier:
 
         except aiohttp.ClientConnectorError as e:
             print(f"Connection error: {e}")
-            return None
 
-        except Exception as e:
-            print(f"An unexpected error occurred: {e}")
-            return None
     async def official_server_box_ips(self) -> set[str]:
         """Returns a set of all official server IPs."""
         response = await self.fetch()
