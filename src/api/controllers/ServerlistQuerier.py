@@ -20,14 +20,22 @@ class ServerlistQuerier:
         Fetches the official server list data.
         """
         url = self.official_server_list_url
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url) as response:
-                if response.status == 200:
-                    return await response.json()
-                else:
-                    print(f"Failed to fetch official server data: {response.status}")
-                    return None
-    
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url) as response:
+                    if response.status == 200:
+                        return await response.json()
+                    else:
+                        print(f"Failed to fetch official server data: {response.status}")
+                        return None
+
+        except aiohttp.ClientConnectorError as e:
+            print(f"Connection error: {e}")
+            return None
+
+        except Exception as e:
+            print(f"An unexpected error occurred: {e}")
+            return None
     async def official_server_box_ips(self) -> set[str]:
         """Returns a set of all official server IPs."""
         response = await self.fetch()
