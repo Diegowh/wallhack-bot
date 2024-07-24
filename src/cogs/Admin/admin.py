@@ -1,4 +1,5 @@
 import os
+import signal
 import sys
 
 import discord
@@ -16,7 +17,14 @@ class Admin(commands.Cog):
     @app_commands.command(name="restart", description="Restarts the bot.")
     async def restart(self, interaction: discord.Interaction):
         await interaction.response.send_message("Restarting bot...", ephemeral=True)
-        os.execv(sys.executable, ['python'] + sys.argv)
+
+        with open(self.bot.pid_file, "w") as f:
+            f.write(str(os.getpid()))
+
+        await self.bot.close()
+        if self.bot.is_closed():
+            print(f"Bot is closed!")
+            os.execv(sys.executable, ['python'] + sys.argv)
 
 
 async def setup(bot: commands.Bot):
