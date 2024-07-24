@@ -4,9 +4,10 @@ import asyncio
 import json
 import os
 import time
+import signal
 from logging import getLogger
 from typing import Optional
-
+import psutil
 import discord
 from colorama import Fore, Back, Style
 from discord.errors import DiscordServerError
@@ -42,7 +43,8 @@ class Bot(commands.Bot):
             intents=discord.Intents.all(),
             chunk_guild_at_startup=False
         )
-
+        self.pid_file = "src/config/bot_pid.txt"
+        self.owner_id = 184321136920756224
         self.server_data_manager = ServerData()
         self.script_dir = os.path.dirname(os.path.abspath(__file__))
         self.settings_file_dir = os.path.join(self.script_dir, "settings.json")
@@ -55,7 +57,7 @@ class Bot(commands.Bot):
 
     async def on_ready(self) -> None:
         log.info(f"logged in as {Fore.YELLOW}{self.user}{Style.RESET_ALL}")
-
+        await self.shutdown_previous_instance()
         self.settings = self.load_or_create_settings()
         await self.load_extensions()
 
@@ -74,6 +76,25 @@ class Bot(commands.Bot):
             await self.servers_pop_channel.purge(limit=4)
 
         self.start_auto_pop.start()
+
+    async def shutdown_previous_instance(self):
+        try:
+            with open(self.pid_file, "r") as f:
+                old_pid = int(f.read())
+
+            process = psutil.Process(old_pid)
+            process.terminate()
+            process.wait()
+            print(f"Previous bot instance with PID {old_pid} terminated")
+
+        except psutil.NoSuchProcess:
+            print("Previous bot instance not found")
+
+        except psutil.AccessDenied:
+            print("Access denied to terminate previous bot instance")
+
+        except Exception as e:
+            print(f"Failed to terminate previous bot instance: {e}")
 
     async def success(
             self,
@@ -193,3 +214,9 @@ class Bot(commands.Bot):
                     except Exception as e:
                         log.error(f"Failed to load extension {Fore.YELLOW}{extension}{Style.RESET_ALL}")
                         log.error(e)
+
+    async def restart_bot(self):
+        branch = get_current_branch()
+        bot_token = PRODUCTION_BOT_TOKEN if branch == "main" else DEVELOPMENT_BOT_TOKEN
+
+        await self.start(token=bot_token, reconnect=True)
