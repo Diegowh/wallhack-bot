@@ -30,7 +30,7 @@ class ServerScanner(commands.Cog):
             interaction (discord.Interaction): The interaction object.
             map_number (str): The map number to retrieve the data.
         """
-
+        await interaction.response.defer(ephemeral=True)
         pop_msg = await self.server_data.pop(map_number)
 
         await interaction.response.send_message(embed=pop_msg)
