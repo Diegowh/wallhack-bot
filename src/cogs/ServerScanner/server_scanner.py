@@ -31,9 +31,16 @@ class ServerScanner(commands.Cog):
             map_number (str): The map number to retrieve the data.
         """
         await interaction.response.defer(ephemeral=True)
-        pop_msg = await self.server_data.pop(map_number)
+        try:
+            pop_msg = await self.server_data.pop(map_number)
 
-        await interaction.response.send_message(embed=pop_msg)
+            await interaction.followup.send(embed=pop_msg)
+
+        except asyncio.TimeoutError:
+            await interaction.followup.send("The request timed out. Try again later.")
+        except Exception as e:
+            await interaction.followup.send("An error occurred")
+            print(f"An error occurred while fetching pop data: {e}")
 
     @app_commands.command(name=CommandName.STATUS)
     async def status(self, interaction: discord.Interaction, map_number: str):
