@@ -156,13 +156,13 @@ class Bot(commands.Bot):
                 return
 
             for map_number in self.maps_to_check:
-                await self.get_map_data(map_number)
+                await self.send_map_data_embed(map_number)
 
         except (DiscordServerError, Exception) as e:
             log.exception(f"Error in start_auto_pop: {e}, retrying loop in 180 seconds...")
             await asyncio.sleep(180)
 
-    async def get_map_data(self, map_number):
+    async def send_map_data_embed(self, map_number):
         map_data = await self.server_data_manager.fetch_map_data(map_number=map_number)
         await asyncio.sleep(2)
 
