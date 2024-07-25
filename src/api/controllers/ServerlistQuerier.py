@@ -5,8 +5,6 @@ import aiohttp
 import asyncio
 from src.config.config import SERVERLIST_URL
 
-from src.api.controllers.Querier import Querier
-
 
 class ServerlistQuerier:
     """
