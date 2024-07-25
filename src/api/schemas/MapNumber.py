@@ -1,5 +1,5 @@
 from src.exceptions.exceptions import (
-    InvaidMapNumberTypeError,
+    InvalidMapNumberTypeError,
     NonDigitMapNumberError,
     InvalidMapNumberLengthError,
     MapNumberStartsWithZeroError,
@@ -16,7 +16,7 @@ class MapNumber(BaseModel):
     @field_validator("num")
     def valid_map_number(cls, value):
         if not isinstance(value, str):
-            raise InvaidMapNumberTypeError("Map number must be a string")
+            raise InvalidMapNumberTypeError("Map number must be a string")
         if not value.isdigit():
             raise NonDigitMapNumberError("Map number must be a digit")
         if len(value) != 4:
