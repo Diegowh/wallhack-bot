@@ -1,4 +1,4 @@
-from src.api.controllers.EpicGamesServerQuerier import EpicGamesServerQuerier
+from src.api.controllers.EpicGamesQuerier import EpicGamesQuerier
 from src.api.controllers.ServerlistQuerier import ServerlistQuerier
 from src.api.schemas.MapNumber import MapNumber
 from src.exceptions.exceptions import (
@@ -10,7 +10,7 @@ from src.exceptions.exceptions import (
 class ARKServer:
     def __init__(self) -> None:
         self.serverlist_querier = ServerlistQuerier()
-        self.epic_querier = EpicGamesServerQuerier()
+        self.epic_querier = EpicGamesQuerier()
     
     async def map_list(self):
         server_maps = self.serverlist_querier.load_map_ips()
