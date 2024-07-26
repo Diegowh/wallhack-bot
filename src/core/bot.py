@@ -53,6 +53,7 @@ class Bot(commands.Bot):
         self.settings: dict | None = None
 
         self.maps_to_check: list[str] = ["2154", "2421"]
+        self.id = 1205488021164662844
 
     async def on_ready(self) -> None:
         log.info(f"logged in as {Fore.YELLOW}{self.user}{Style.RESET_ALL}")

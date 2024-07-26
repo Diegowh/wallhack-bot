@@ -1,12 +1,14 @@
+from __future__ import  annotations
+
 import random
 
 import discord
 from discord.ext import commands
+from src.core.bot import Bot
 from src.utils import MENTION_RESPONSES
 
-
 class Interactions(commands.Cog):
-    def __init__(self, bot: commands.Bot) -> None:
+    def __init__(self, bot: Bot) -> None:
         self.bot = bot
         self.clown_emoji = "\U0001F921"
         self.hug_emoji = "\U0001FAC2"
@@ -15,7 +17,11 @@ class Interactions(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
+        if message.author.id == self.bot.id:
+            return
+
         if self.bot.user.mentioned_in(message):
+
             response = random.choice(MENTION_RESPONSES)
             await message.channel.send(f'{message.author.mention} {response}')
 
