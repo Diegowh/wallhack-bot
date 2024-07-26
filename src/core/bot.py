@@ -4,7 +4,6 @@ import asyncio
 import json
 import os
 import time
-import signal
 from logging import getLogger
 from typing import Optional
 import psutil
@@ -12,9 +11,9 @@ import discord
 from colorama import Fore, Back, Style
 from discord.errors import DiscordServerError
 from discord.ext import commands, tasks
-from src.server_data import ServerData
 from src.settings import default_settings
 
+from src.core.ark_data_manager import ARKDataManager
 from src.core.embed import Embed
 from src.views.close_ticket import CloseTicket
 from src.views.create_ticket import CreateTicket
@@ -45,12 +44,12 @@ class Bot(commands.Bot):
         )
         self.pid_file = "src/config/bot_pid.txt"
         self.owner_id = 184321136920756224
-        self.server_data_manager = ServerData()
+        self.ark_data_manager = ARKDataManager()
         self.script_dir = os.path.dirname(os.path.abspath(__file__))
         self.settings_file_dir = os.path.join(self.script_dir, "settings.json")
 
         self.message_ids = {}
-        self.servers_pop_channel: discord.ChannelType.text | None = None
+        self.autopop_channel: Optional[discord.TextChannel] = None
         self.settings: dict | None = None
 
         self.maps_to_check: list[str] = ["2154", "2421"]
@@ -69,12 +68,12 @@ class Bot(commands.Bot):
         self.add_view(DeleteTicket())
         log.info(f"Views added {Fore.YELLOW}{len(self.persistent_views)} Views{Style.RESET_ALL}")
 
-        # Delete servers pop channel old msg
-        self.servers_pop_channel = self.get_channel(1258888031285542992)
-        if self.servers_pop_channel is not None:
-            # Delete previous msg
-            await self.servers_pop_channel.purge(limit=4)
+        self.autopop_channel = self.get_channel(1258888031285542992)  # ADAT disc channel
+        if self.autopop_channel is None:
+            self.autopop_channel = self.get_channel(1266307922611408972)  # DEV disc channel
 
+        # Delete servers pop channel old msg
+        await self.autopop_channel.purge(limit=4)
         self.start_auto_pop.start()
 
     async def shutdown_previous_instance(self):
@@ -144,46 +143,30 @@ class Bot(commands.Bot):
                 return await interaction.followup.send(content=f"{message}", ephemeral=ephemeral)
             return await interaction.response.send_message(content=f"{message}", ephemeral=ephemeral)
 
-    @tasks.loop(seconds=30)
+    @tasks.loop(seconds=45)
     async def start_auto_pop(self):
 
         try:
-            self.servers_pop_channel = self.get_channel(1258888031285542992)
-
-            if self.servers_pop_channel is None:
+            if self.autopop_channel is None:
                 log.error("Failed to get servers_pop_channel. Cancelling autopop task.")
                 self.start_auto_pop.cancel()
                 return
 
             for map_number in self.maps_to_check:
-                await self.get_map_data(map_number)
+                embed = await self.ark_data_manager.get_embed(map_number)
+                await self.send_or_edit_message(map_number, embed)
 
         except (DiscordServerError, Exception) as e:
             log.exception(f"Error in start_auto_pop: {e}, retrying loop in 180 seconds...")
             await asyncio.sleep(180)
 
-    async def get_map_data(self, map_number):
-        map_data = await self.server_data_manager.fetch_map_data(map_number=map_number)
-        await asyncio.sleep(2)
-
-        embed = (
-            self.server_data_manager.create_pop_message(map_data)
-            if map_data
-            else self.server_data_manager.create_error_embed(
-                title="Server not found",
-                description="Server is down"
-            )
-        )
-
-        await self.send_or_edit_message(map_number, embed)
-
     async def send_or_edit_message(self, map_number, embed):
         if map_number in self.message_ids:
-            message = await self.servers_pop_channel.fetch_message(self.message_ids[map_number])
+            message = await self.autopop_channel.fetch_message(self.message_ids[map_number])
             await message.edit(embed=embed)
 
         else:
-            message = await self.servers_pop_channel.send(embed=embed)
+            message = await self.autopop_channel.send(embed=embed)
             self.message_ids[map_number] = message.id
 
     def load_or_create_settings(self) -> dict:

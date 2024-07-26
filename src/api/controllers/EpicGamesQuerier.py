@@ -1,4 +1,5 @@
 from base64 import b64encode
+from typing import Dict, Any
 
 import aiohttp
 from src.config.config import (
@@ -7,11 +8,15 @@ from src.config.config import (
     DEPLOYMENT_ID,
     EPIC_API,
 )
+from src.exceptions.exceptions import (
+    MapNumberStartsWithZeroError,
+    InvalidMapNumberTypeError,
+    NonDigitMapNumberError,
+    InvalidMapNumberLengthError
+)
 
-from .Querier import Querier
 
-
-class EpicGamesServerQuerier(Querier):
+class EpicGamesQuerier:
     def __init__(self) -> None:
         # OAuth2 credentials extracted from ARK: Survival Ascended files
         self.client_id = CLIENT_ID
@@ -20,7 +25,7 @@ class EpicGamesServerQuerier(Querier):
         self.epic_api = EPIC_API
         self.access_token = None
 
-    async def get_client_access_token(self):
+    async def _get_client_access_token(self):
         url = f"{self.epic_api}/auth/v1/oauth/token"
         auth = b64encode(f"{self.client_id}:{self.client_secret}".encode()).decode()
         headers = {
@@ -38,7 +43,6 @@ class EpicGamesServerQuerier(Querier):
                 headers=headers,
                 data=body,
             ) as response:
-
                 if response.status == 200:
                     data = await response.json()
                     self.access_token = data.get("access_token")
@@ -46,7 +50,7 @@ class EpicGamesServerQuerier(Querier):
                 else:
                     print(f"Failed to obtain access token: {await response.text()}")
 
-    async def _query_info(self, ip_address):
+    async def _query_info(self, map_number: str):
         """
         Query server information using the Epic Games API.
         """
@@ -63,9 +67,14 @@ class EpicGamesServerQuerier(Querier):
         payload = {
             'criteria': [
                 {
-                    'key': 'attributes.ADDRESS_s',
+                    'key': 'attributes.CUSTOMSERVERNAME_s',
+                    'op': 'CONTAINS',
+                    'value': map_number
+                },
+                {
+                    'key': 'attributes.OFFICIALSERVER_s',
                     'op': 'EQUAL',
-                    'value': ip_address  # Use the ip_address parameter
+                    'value': '1'  # Ensure the server is an official one
                 }
                 # Add other relevant criteria as needed
             ]
@@ -84,9 +93,18 @@ class EpicGamesServerQuerier(Querier):
                     print(f"Failed to query server information> {await response.text()}")
                     return None
 
-    async def fetch(self, ip):
+    async def fetch(self, map_number: str) -> Dict[str, Any]:
         """
         Fetch server information using the Epic Games API.
         """
-        await self.get_client_access_token()
-        return await self._query_info(ip)
+        if not map_number.isdigit():
+            raise InvalidMapNumberTypeError
+
+        if not len(map_number) == 4:
+            raise InvalidMapNumberLengthError
+
+        if map_number.startswith("0"):
+            raise MapNumberStartsWithZeroError
+
+        await self._get_client_access_token()
+        return await self._query_info(map_number)

@@ -7,7 +7,7 @@ class InvalidMapNumberError(Exception):
         super().__init__(self.message)
         
         
-class InvaidMapNumberTypeError(InvalidMapNumberError):
+class InvalidMapNumberTypeError(InvalidMapNumberError):
     """Invalid map number type"""
     pass
 
@@ -20,6 +20,7 @@ class NonDigitMapNumberError(InvalidMapNumberError):
 class InvalidMapNumberLengthError(InvalidMapNumberError):
     """Map number is not 4 digits long"""
     pass
+
 
 class MapNumberStartsWithZeroError(InvalidMapNumberError):
     """Map number starts with 0"""
@@ -50,3 +51,4 @@ class ServerSessionNotFoundError(Exception):
     def __init__(self, message: str = "Server session not found"):
         self.message = message
         super().__init__(self.message)
+
