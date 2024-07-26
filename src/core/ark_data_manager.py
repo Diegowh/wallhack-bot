@@ -77,4 +77,4 @@ class ARKDataManager:
 
     async def is_server_down(self, map_number) -> bool:
         response = await self.querier.fetch(map_number)
-        return len(response['sessions']) == 0
+        return response['count'] == 0
