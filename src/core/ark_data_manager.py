@@ -24,7 +24,7 @@ class ARKDataManager:
     @staticmethod
     def _create_embed(data: Optional[Dict[str, Any]]) -> discord.Embed:
 
-        if data:
+        if data['count'] != 0:
             data = data['sessions'][0]
             last_update = data['lastUpdated'] = int(time.time())
             map_name = data["attributes"]["CUSTOMSERVERNAME_s"]
