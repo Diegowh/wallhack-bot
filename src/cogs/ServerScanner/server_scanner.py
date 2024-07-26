@@ -6,7 +6,8 @@ from discord import app_commands
 from discord.ext import commands, tasks
 from src.utils import CommandName
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
+
 if TYPE_CHECKING:
     from src.core.bot import Bot
 
@@ -19,11 +20,11 @@ class ServerScanner(commands.Cog):
         self.ark_data_manager = self.bot.ark_data_manager
 
         self.server_was_down: bool = False
-        self.status_map_number: str | None = None
+        self.status_map_number: Optional[str] = None
         self.status_interaction: discord.Interaction | None = None
 
         self.lock = asyncio.Lock()
-        self.active_status_loops: dict[str, dict[str, int | bool]] = {}
+        self.active_status_loops = {}
 
     @app_commands.command(name=CommandName.POP)
     async def pop(self, interaction: discord.Interaction, map_number: str):
@@ -58,23 +59,15 @@ class ServerScanner(commands.Cog):
 
     @tasks.loop(seconds=10)
     async def status_task(self, interaction: discord.Interaction, map_number: str, max_loops: int = 30):
-        """
-        Checks the status of a server periodically and sends notifications.
 
-        Args:
-            interaction (discord.Interaction): The interaction object.
-            map_number (str): The map number to check the status for.
-            max_loops (int, optional): The maximum number of times to check the status. Defaults to 40.
-        """
         is_down = await self.ark_data_manager.is_server_down(map_number)
         async with self.lock:
-            self.active_status_loops[map_number]["counter"] += 1
             server_was_down = self.active_status_loops[map_number].get("server_was_down", False)
 
             if is_down:
                 self.active_status_loops[map_number]["server_was_down"] = True
 
-            elif server_was_down and not is_down:
+            elif not is_down and server_was_down:
                 member_role_id = self.settings.get('role_id_to_tag')
                 role: discord.Role = discord.utils.get(interaction.guild.roles, id=int(member_role_id))
                 await interaction.followup.send(f"{role.mention} {map_number} is up!")
@@ -82,11 +75,14 @@ class ServerScanner(commands.Cog):
                 self.status_task.cancel()
                 return
 
-            if self.active_status_loops[map_number]["counter"] >= max_loops:
-                await interaction.followup.send(f"The server {map_number} is still up, try again.")
-                self.active_status_loops.pop(map_number)
-                self.status_task.cancel()
-                return
+            else:
+                self.active_status_loops[map_number]["counter"] += 1
+
+                if self.active_status_loops[map_number]["counter"] >= max_loops:
+                    await interaction.followup.send(f"The server {map_number} is still up, try again.")
+                    self.active_status_loops.pop(map_number)
+                    self.status_task.cancel()
+                    return
 
     @status_task.before_loop
     async def wait_until_bot_is_ready(self):
@@ -96,15 +92,6 @@ class ServerScanner(commands.Cog):
         await self.bot.wait_until_ready()
 
     def is_status_command_running(self, map_number: str) -> bool:
-        """
-        Checks if a status check is currently running for a specific map number.
-
-        Args:
-            map_number (str): The map number to check.
-
-        Returns:
-            bool: True if a status check is running for the given map number, False otherwise.
-        """
         return map_number in self.active_status_loops
 
 
