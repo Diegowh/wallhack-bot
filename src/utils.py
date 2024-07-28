@@ -36,6 +36,8 @@ class CommandName(StrEnum):
     BP = "bp"
     ADD = "add"
     REMOVE = "remove"
+    TIMER = "timer"
+    NOTIFY = "notify"
 
     @classmethod
     def _missing_(cls, value: str) -> Any:
