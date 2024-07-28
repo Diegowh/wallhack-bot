@@ -48,7 +48,10 @@ class Bot(commands.Bot):
         self.ark_data_manager = ARKDataManager()
         self.script_dir = os.path.dirname(os.path.abspath(__file__))
         self.settings_file_dir = os.path.join(self.script_dir, "settings.json")
-
+        self.activity = discord.Activity(
+                type=discord.ActivityType.playing,
+                name="ARK: Survival Ascended"
+            )
         self.message_ids = {}
         self.autopop_channel: Optional[discord.TextChannel] = None
         self.settings: dict | None = None
