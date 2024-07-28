@@ -10,7 +10,10 @@ class Ticket(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
 
-    @app_commands.command(name=CommandName.TICKET, description="Opens a ticket")
+    @app_commands.command(
+        name=CommandName.TICKET,
+        description="Opens a ticket. Press the button to create a ticket"
+    )
     async def ticket(self, interaction: discord.Interaction):
         await interaction.response.send_message(
             embed=discord.Embed(
@@ -19,7 +22,10 @@ class Ticket(commands.Cog):
             view=CreateTicket()
         )
 
-    @app_commands.command(name=CommandName.ADD, description="Adds a user to the ticket")
+    @app_commands.command(
+        name=CommandName.ADD,
+        description="Adds a user to the current ticket, allowing them to view and send messages."
+    )
     async def add(self, interaction: discord.Interaction, user: discord.Member):
         channel = interaction.channel
 
@@ -30,7 +36,10 @@ class Ticket(commands.Cog):
                 f"{user.mention} has been added to the ticket."
             )
 
-    @app_commands.command(name=CommandName.REMOVE, description="Removes a user from the ticket")
+    @app_commands.command(
+        name=CommandName.REMOVE,
+        description="Removes a user from the current ticket, revoking their view and send permissions."
+    )
     async def remove(self, interaction: discord.Interaction, user: discord.Member):
         channel = interaction.channel
 

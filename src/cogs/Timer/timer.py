@@ -19,7 +19,10 @@ class Timer(commands.Cog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
-    @app_commands.command(name=CommandName.TIMER)
+    @app_commands.command(
+        name=CommandName.TIMER,
+        description="Sets a timer for a specified duration and notifies you with a message when the time is up."
+    )
     async def timer(
             self,
             interaction: discord.Interaction,
@@ -33,7 +36,10 @@ class Timer(commands.Cog):
         await asyncio.sleep(sleep_time)
         await interaction.followup.send(f"{interaction.user.mention}, {message}", ephemeral=True)
 
-    @app_commands.command(name=CommandName.NOTIFY)
+    @app_commands.command(
+        name=CommandName.NOTIFY,
+        description="Sets a notification timer. React with ⏰ to be notified when the time is up."
+    )
     async def notify(
             self,
             interaction: discord.Interaction,

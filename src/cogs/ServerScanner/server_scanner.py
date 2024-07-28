@@ -26,7 +26,10 @@ class ServerScanner(commands.Cog):
         self.lock = asyncio.Lock()
         self.active_status_tasks = {}
 
-    @app_commands.command(name=CommandName.POP)
+    @app_commands.command(
+        name=CommandName.POP,
+        description="Get the current pop of the specified ARK server"
+    )
     async def pop(self, interaction: discord.Interaction, map_number: str):
 
         await interaction.response.defer(ephemeral=False)
@@ -41,7 +44,10 @@ class ServerScanner(commands.Cog):
             await interaction.followup.send("An error occurred")
             print(f"An error occurred while fetching pop data: {e}")
 
-    @app_commands.command(name=CommandName.STATUS)
+    @app_commands.command(
+        name=CommandName.STATUS,
+        description="Check the specified ARK server's status and notify when it is back online."
+    )
     async def status(self, interaction: discord.Interaction, map_number: str):
 
         async with self.lock:

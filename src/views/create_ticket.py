@@ -55,7 +55,7 @@ class CreateTicket(discord.ui.View):
             content=admin_role.mention,
             embed=discord.Embed(
                 title=f"Ticket Created!",
-                description="Don't ping a staff member, they will be here soon.",
+                description="Don't ping an admin, they will be here soon.",
                 color=discord.Color.green()
             ),
             view=CloseTicket()
