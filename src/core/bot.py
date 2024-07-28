@@ -6,15 +6,16 @@ import os
 import time
 from logging import getLogger
 from typing import Optional
-import psutil
+
 import discord
+import psutil
 from colorama import Fore, Back, Style
 from discord.errors import DiscordServerError
 from discord.ext import commands, tasks
-from src.settings import default_settings
 
 from src.core.ark_data_manager import ARKDataManager
 from src.core.embed import Embed
+from src.settings import default_settings
 from src.views.close_ticket import CloseTicket
 from src.views.create_ticket import CreateTicket
 from src.views.delete_ticket import DeleteTicket
@@ -157,8 +158,12 @@ class Bot(commands.Bot):
                 embed = await self.ark_data_manager.get_embed(map_number)
                 await self.send_or_edit_message(map_number, embed)
 
-        except (DiscordServerError, Exception) as e:
-            log.exception(f"Error in start_auto_pop: {e}, retrying loop in 180 seconds...")
+        except DiscordServerError as e:
+            log.error(f"DiscordServerError in start_auto_pop: {e}, retrying loop in 180 seconds...")
+            await asyncio.sleep(180)
+
+        except Exception as e:
+            log.exception(f"Unexpected error in start_auto_pop: {e}, retrying loop in 180 seconds...")
             await asyncio.sleep(180)
 
     async def send_or_edit_message(self, map_number, embed):
