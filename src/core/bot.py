@@ -7,6 +7,7 @@ import time
 from logging import getLogger
 from typing import Optional
 
+import aiohttp
 import discord
 import psutil
 from colorama import Fore, Back, Style
@@ -161,8 +162,8 @@ class Bot(commands.Bot):
                 embed = await self.ark_data_manager.get_embed(map_number)
                 await self.send_or_edit_message(map_number, embed)
 
-        except DiscordServerError as e:
-            log.error(f"DiscordServerError in start_auto_pop: {e}, retrying loop in 180 seconds...")
+        except (DiscordServerError, aiohttp.ClientConnectorError) as e:
+            log.error(f"Connector Error in start_auto_pop: {e}, retrying loop in 180 seconds...")
             await asyncio.sleep(180)
 
         except Exception as e:
