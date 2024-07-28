@@ -47,12 +47,12 @@ class Timer(commands.Cog):
             hours: int,
             minutes: int,
     ):
-        await interaction.response.defer(ephemeral=False)
+        await interaction.response.send_message("Timer set!",ephemeral=True)
 
         sleep_time = self.convert_to_seconds(hours, minutes)
         unix_time = int(time.time()) + sleep_time
 
-        notification_msg = await interaction.followup.send(
+        notification_msg = await interaction.channel.send(
             f"**{message}** <t:{unix_time}:R>\nReact with ⏰ to get notified!"
         )
 
