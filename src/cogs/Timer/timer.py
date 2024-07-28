@@ -28,9 +28,9 @@ class Timer(commands.Cog):
             minutes: int,
     ):
 
-        time = self.convert_to_seconds(hours, minutes)
+        sleep_time = self.convert_to_seconds(hours, minutes)
         await interaction.response.send_message(f"Timer set for {hours} hours and {minutes} minutes.", ephemeral=True)
-        await asyncio.sleep(time)
+        await asyncio.sleep(sleep_time)
         await interaction.followup.send(f"{interaction.user.mention}, {message}", ephemeral=True)
 
     @app_commands.command(name=CommandName.NOTIFY)
