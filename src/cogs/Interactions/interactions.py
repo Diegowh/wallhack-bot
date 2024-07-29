@@ -33,16 +33,16 @@ class Interactions(commands.Cog):
 
         # Pablo
         if message.author.id == 495339969758363678:
-            if random.random() < 0.2:
+            if random.random() < 0.002:
                 emoji = random.choice([self.clown_emoji, self.hug_emoji])
                 await message.add_reaction(emoji)
 
-            if random.random() < 0.05:
+            if random.random() < 0.001:
                 await message.reply(self.concerned_monkey_gif)
 
         # Alex
         if message.author.id == 314179525820940298:
-            if random.random() < 0.02:
+            if random.random() < 0.002:
                 await message.add_reaction("🤫")
 
 
