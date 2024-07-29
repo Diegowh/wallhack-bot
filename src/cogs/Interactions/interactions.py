@@ -17,13 +17,13 @@ class Interactions(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
-        if message.author.id == self.bot.id:
-            return
+        # if message.author.id == self.bot.id:
+        #     return
 
-        if self.bot.user.mentioned_in(message):
-
-            response = random.choice(MENTION_RESPONSES)
-            await message.channel.send(f'{message.author.mention} {response}')
+        # if self.bot.user.mentioned_in(message):
+        #
+        #     response = random.choice(MENTION_RESPONSES)
+        #     await message.channel.send(f'{message.author.mention} {response}')
 
         # Member
         user_roles = [role.id for role in message.author.roles]
