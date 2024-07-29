@@ -190,3 +190,4 @@ v2.0 wallhack-bot.zip
 *.sh
 wallhack-bot.zip
 pg.py
+*.db
