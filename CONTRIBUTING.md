@@ -27,7 +27,7 @@ To ensure a smooth collaboration process, please follow the guidelines and steps
      ```
 4. Create a `.env` File
    
-    Use the cloned `.env.example` to see whats required to put in the `.env.` file.
+    Use the cloned `.env.example` to see what is required to put in the `.env.` file.
 
 5. Install the required dependencies
    ```
