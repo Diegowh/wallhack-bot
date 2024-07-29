@@ -47,7 +47,7 @@ class Timer(commands.Cog):
             if run_date > datetime.datetime.now():
                 trigger = DateTrigger(run_date=run_date)
                 print(f"Scheduling timer: {message_id}, {channel_id}, {user_id}, {message}, {run_date}")
-                self.scheduler.add_job(self.notify_callback, trigger, args=[message_id, channel_id, user_id, message])
+                self.scheduler.add_job(self.timer_callback, trigger, args=[message_id, channel_id, user_id, message])
 
             else:
                 channel = self.bot.get_channel(channel_id)
@@ -59,7 +59,7 @@ class Timer(commands.Cog):
                     self.conn.commit()
         c.close()
 
-    async def notify_callback(self, message_id, channel_id, user_id, message):
+    async def timer_callback(self, message_id, channel_id, user_id, message):
         print(f"Notifying users for message ID {message_id} in channel ID {channel_id}")
         channel = self.bot.get_channel(channel_id)
         if channel:
@@ -82,28 +82,28 @@ class Timer(commands.Cog):
             conn.commit()
             conn.close()
 
+    # @app_commands.command(
+    #     name=CommandName.TIMER,
+    #     description="Sets a timer for a specified duration and notifies you with a message when the time is up."
+    # )
+    # async def timer(
+    #         self,
+    #         interaction: discord.Interaction,
+    #         message: str,
+    #         hours: int,
+    #         minutes: int,
+    # ):
+    #
+    #     sleep_time = self.convert_to_seconds(hours, minutes)
+    #     await interaction.response.send_message(f"Timer set for {hours} hours and {minutes} minutes.", ephemeral=True)
+    #     await asyncio.sleep(sleep_time)
+    #     await interaction.followup.send(f"{interaction.user.mention}, {message}", ephemeral=True)
+
     @app_commands.command(
         name=CommandName.TIMER,
-        description="Sets a timer for a specified duration and notifies you with a message when the time is up."
-    )
-    async def timer(
-            self,
-            interaction: discord.Interaction,
-            message: str,
-            hours: int,
-            minutes: int,
-    ):
-
-        sleep_time = self.convert_to_seconds(hours, minutes)
-        await interaction.response.send_message(f"Timer set for {hours} hours and {minutes} minutes.", ephemeral=True)
-        await asyncio.sleep(sleep_time)
-        await interaction.followup.send(f"{interaction.user.mention}, {message}", ephemeral=True)
-
-    @app_commands.command(
-        name=CommandName.NOTIFY,
         description="Sets a notification timer. React with ⏰ to be notified when the time is up."
     )
-    async def notify(
+    async def timer(
             self,
             interaction: discord.Interaction,
             message: str,
@@ -123,7 +123,7 @@ class Timer(commands.Cog):
         run_date = datetime.datetime.now() + datetime.timedelta(seconds=sleep_time)
         print(f"Setting timer: {notification_msg.id}, {interaction.channel.id}, {interaction.user.id}, {message}, {run_date}")
         trigger = DateTrigger(run_date=run_date)
-        self.scheduler.add_job(self.notify_callback, trigger, args=[notification_msg.id, interaction.channel.id, interaction.user.id, message])
+        self.scheduler.add_job(self.timer_callback, trigger, args=[notification_msg.id, interaction.channel.id, interaction.user.id, message])
 
         c = self.conn.cursor()
         c.execute("INSERT INTO timers (message_id, channel_id, user_id, message, run_date) VALUES (?, ?, ?, ?, ?)",
