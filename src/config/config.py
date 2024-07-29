@@ -12,4 +12,4 @@ SERVERLIST_URL = "https://cdn2.arkdedicated.com/servers/asa/officialserverlist.j
 
 # Discord
 DEVELOPMENT_BOT_TOKEN = config("DEVELOPMENT_BOT_TOKEN")
-PRODUCTION_BOT_TOKEN = config("PRODUCTION_BOT_TOKEN")
+PRODUCTION_BOT_TOKEN = config("PRODUCTION_BOT_TOKEN", default="")
