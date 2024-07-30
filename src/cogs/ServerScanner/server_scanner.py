@@ -64,7 +64,7 @@ class ServerScanner(commands.Cog):
 
     async def status_task(self, interaction: discord.Interaction, map_number: str, max_loops: int = 60):
         counter = 0
-        server_was_down = True
+        server_was_down = False
 
         while counter < max_loops:
             is_down = await self.ark_data_manager.is_server_down(map_number)
@@ -73,7 +73,7 @@ class ServerScanner(commands.Cog):
             elif not is_down and server_was_down:
                 member_role_id = self.settings.get('role_id_to_tag')
                 role: discord.Role = discord.utils.get(interaction.guild.roles, id=int(member_role_id))
-                await interaction.followup.send(f"{role.mention if role is not None else '@here'} {map_number} is up!")
+                await interaction.channel.send(f"{role.mention if role is not None else '@here'} {map_number} is up!")
                 break
             else:
                 counter += 1
