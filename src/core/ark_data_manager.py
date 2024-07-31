@@ -16,10 +16,10 @@ class ARKDataManager:
         try:
             data = await self.querier.fetch(map_number)
         except InvalidMapNumberError:
-            return self._invalid_input_embed()
+            return ARKDataManager._invalid_input_embed()
         except Exception:
-            return self._generic_error_embed()
-        return self._create_embed(data)
+            return ARKDataManager._generic_error_embed()
+        return ARKDataManager._create_embed(data)
 
     @staticmethod
     def _create_embed(data: Optional[Dict[str, Any]]) -> discord.Embed:
