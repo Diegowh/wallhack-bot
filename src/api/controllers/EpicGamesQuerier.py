@@ -17,6 +17,11 @@ from src.exceptions.exceptions import (
 
 
 class EpicGamesQuerier:
+    __slots__ = (
+        'client_id', 'client_secret', 'deployment_id',
+        'epic_api', 'access_token'
+    )
+
     def __init__(self) -> None:
         # OAuth2 credentials extracted from ARK: Survival Ascended files
         self.client_id = CLIENT_ID
