@@ -15,6 +15,6 @@ class Embed(OriginalEmbed):
 
         super().__init__(color=color, **kwargs)
 
-    def credits(self) -> None:
+    def credits(self) -> Embed:
         super().set_footer(text="Made by Wallhack")
         return self
