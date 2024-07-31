@@ -38,6 +38,7 @@ class CommandName(StrEnum):
     REMOVE = "remove"
     TIMER = "timer"
     NOTIFY = "notify"
+    RESTART = "restart"
 
     @classmethod
     def _missing_(cls, value: str) -> Any:
