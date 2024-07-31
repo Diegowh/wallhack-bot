@@ -40,7 +40,6 @@ class MapNotFoundError(Exception):
         self.message = message
         super().__init__(self.message)
         
-        
 
 class ExceptionHandlerRegistrationError(Exception):
     def __init__(self, message: str = "Error registering exception handlers") -> None:
