@@ -54,6 +54,7 @@ class Blueprints(commands.Cog):
             view=self.view,
             ephemeral=True,
         )
+
 async def setup(bot: commands.Bot):
     await bot.add_cog(Blueprints(bot))
 
