@@ -1,10 +1,11 @@
+from pydantic import BaseModel, field_validator
+
 from src.exceptions.exceptions import (
     InvalidMapNumberTypeError,
     NonDigitMapNumberError,
     InvalidMapNumberLengthError,
     MapNumberStartsWithZeroError,
 )
-from pydantic import BaseModel, field_validator
 
 
 class MapNumber(BaseModel):

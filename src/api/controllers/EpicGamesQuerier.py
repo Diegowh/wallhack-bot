@@ -2,6 +2,7 @@ from base64 import b64encode
 from typing import Dict, Any
 
 import aiohttp
+
 from src.config.config import (
     CLIENT_ID,
     CLIENT_SECRET,
@@ -10,13 +11,17 @@ from src.config.config import (
 )
 from src.exceptions.exceptions import (
     MapNumberStartsWithZeroError,
-    InvalidMapNumberTypeError,
     NonDigitMapNumberError,
     InvalidMapNumberLengthError
 )
 
 
 class EpicGamesQuerier:
+    __slots__ = (
+        'client_id', 'client_secret', 'deployment_id',
+        'epic_api', 'access_token'
+    )
+
     def __init__(self) -> None:
         # OAuth2 credentials extracted from ARK: Survival Ascended files
         self.client_id = CLIENT_ID
@@ -98,7 +103,7 @@ class EpicGamesQuerier:
         Fetch server information using the Epic Games API.
         """
         if not map_number.isdigit():
-            raise InvalidMapNumberTypeError
+            raise NonDigitMapNumberError
 
         if not len(map_number) == 4:
             raise InvalidMapNumberLengthError

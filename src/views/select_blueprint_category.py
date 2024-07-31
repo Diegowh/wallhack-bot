@@ -1,4 +1,5 @@
 import json
+
 import discord
 
 
@@ -6,7 +7,7 @@ class SelectBlueprintCategory(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
         self.selected_category = None
-        self.blueprint_items = self.load_bluprint_items()
+        self.blueprint_items = SelectBlueprintCategory.load_bluprint_items()
 
     @discord.ui.button(
         label="Dino",

@@ -1,6 +1,8 @@
-import io
 import os
+
 from discord import File
+
+
 # from PIL import Image
 
 

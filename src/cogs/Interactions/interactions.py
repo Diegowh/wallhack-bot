@@ -1,11 +1,12 @@
-from __future__ import  annotations
+from __future__ import annotations
 
 import random
 
 import discord
 from discord.ext import commands
+
 from src.core.bot import Bot
-from src.utils import MENTION_RESPONSES
+
 
 class Interactions(commands.Cog):
     def __init__(self, bot: Bot) -> None:

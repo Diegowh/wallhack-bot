@@ -1,17 +1,17 @@
 from __future__ import annotations
 
+import datetime
 import os
 import sqlite3
-import asyncio
 import time
 from typing import TYPE_CHECKING
 
 import discord
-from discord import app_commands
-from discord.ext import commands
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.date import DateTrigger
-import datetime
+from discord import app_commands
+from discord.ext import commands
+
 from src.utils import CommandName
 
 if TYPE_CHECKING:
@@ -73,7 +73,7 @@ class Timer(commands.Cog):
                             users_to_notify.append(user.mention)
 
             if users_to_notify:
-                message = self.remove_role_mentions(message)
+                message = Timer.remove_role_mentions(message)
                 await channel.send(f"**{message}** \n{' '.join(users_to_notify)}")
 
             conn = sqlite3.connect(self.db_path)
@@ -112,7 +112,7 @@ class Timer(commands.Cog):
     ):
         await interaction.response.send_message("Timer set!", ephemeral=True)
 
-        sleep_time = self.convert_to_seconds(hours, minutes)
+        sleep_time = Timer.convert_to_seconds(hours, minutes)
         unix_time = int(time.time()) + sleep_time
 
         notification_msg = await interaction.channel.send(
