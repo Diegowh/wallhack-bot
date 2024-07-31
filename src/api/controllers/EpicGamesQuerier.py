@@ -98,7 +98,7 @@ class EpicGamesQuerier:
         Fetch server information using the Epic Games API.
         """
         if not map_number.isdigit():
-            raise InvalidMapNumberTypeError
+            raise NonDigitMapNumberError
 
         if not len(map_number) == 4:
             raise InvalidMapNumberLengthError
