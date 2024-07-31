@@ -2,6 +2,7 @@ from base64 import b64encode
 from typing import Dict, Any
 
 import aiohttp
+
 from src.config.config import (
     CLIENT_ID,
     CLIENT_SECRET,
@@ -10,7 +11,6 @@ from src.config.config import (
 )
 from src.exceptions.exceptions import (
     MapNumberStartsWithZeroError,
-    InvalidMapNumberTypeError,
     NonDigitMapNumberError,
     InvalidMapNumberLengthError
 )

@@ -1,20 +1,23 @@
+from __future__ import annotations
+
 import os
-import signal
 import sys
 
 import discord
-from discord.ext import commands
 from discord import app_commands
+from discord.ext import commands
+
+from src.core.bot import Bot
 from src.utils import CommandName
 
 
 class Admin(commands.Cog):
 
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Bot):
         self.bot = bot
         self.settings = self.bot.settings.get("values")
 
-    @app_commands.command(name="restart", description="Restarts the bot. Don't use it unless it is totally necessary.")
+    @app_commands.command(name=CommandName.RESTART, description="Restarts the bot. Don't use it unless it is totally necessary.")
     async def restart(self, interaction: discord.Interaction):
         await interaction.response.send_message("Restarting bot...", ephemeral=True)
 

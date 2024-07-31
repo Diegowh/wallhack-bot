@@ -1,13 +1,17 @@
+from __future__ import annotations
+
 import discord
 from discord import app_commands
-from src.views.select_blueprint_category import SelectBlueprintCategory
 from discord.ext import commands
-from src.utils import CommandName
+
+from src.core.bot import Bot
 from src.core.image_loader import ImageLoader
+from src.utils import CommandName
+from src.views.select_blueprint_category import SelectBlueprintCategory
 
 
 class Blueprints(commands.Cog):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Bot):
         self.bot = bot
         self.view = SelectBlueprintCategory()
         self.blueprint_items = self.view.blueprint_items

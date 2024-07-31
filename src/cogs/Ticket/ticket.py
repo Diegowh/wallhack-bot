@@ -1,13 +1,17 @@
+from __future__ import annotations
+
 import discord
 from discord import app_commands
 from discord.ext import commands
-from src.views.create_ticket import CreateTicket
+
+from src.core.bot import Bot
 from src.utils import CommandName
+from src.views.create_ticket import CreateTicket
 
 
 class Ticket(commands.Cog):
 
-    def __init__(self, bot: commands.Bot) -> None:
+    def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
     @app_commands.command(
