@@ -21,8 +21,8 @@ def _validate_strenum_value(value: str):
         raise TypeError(f"Expected string, got {type(value).__name__}")
 
 
-def time_to_unix(addHours: int) -> int:
-    return time.time() + addHours * 60 * 60
+def time_to_unix(add_hours: int) -> float:
+    return time.time() + add_hours * 60 * 60
 
 
 class CommandName(StrEnum):
