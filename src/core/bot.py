@@ -206,9 +206,3 @@ class Bot(commands.Bot):
                     except Exception as e:
                         log.error(f"Failed to load extension {Fore.YELLOW}{extension}{Style.RESET_ALL}")
                         log.error(e)
-
-    async def restart_bot(self):
-        branch = get_current_branch()
-        bot_token = PRODUCTION_BOT_TOKEN if branch == "main" else DEVELOPMENT_BOT_TOKEN
-
-        await self.start(token=bot_token, reconnect=True)
