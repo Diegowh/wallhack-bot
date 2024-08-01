@@ -12,6 +12,7 @@ from apscheduler.triggers.date import DateTrigger
 from discord import app_commands
 from discord.ext import commands
 
+from src.cogs.Timer.utils import TimerData
 from src.utils import CommandName
 
 if TYPE_CHECKING:
@@ -40,30 +41,31 @@ class Timer(commands.Cog):
     def load_timers(self):
         c = self.conn.cursor()
         c.execute("SELECT message_id, channel_id, user_id, message, run_date FROM timers")
-        for row in c.fetchall():
-            message_id, channel_id, user_id, message, run_date = row
-            print(f"Loading timer: {message_id}, {channel_id}, {user_id}, {message}, {run_date}")
-            run_date = datetime.datetime.strptime(run_date, "%Y-%m-%d %H:%M:%S")
-            if run_date > datetime.datetime.now():
-                trigger = DateTrigger(run_date=run_date)
-                print(f"Scheduling timer: {message_id}, {channel_id}, {user_id}, {message}, {run_date}")
-                self.scheduler.add_job(self.timer_callback, trigger, args=[message_id, channel_id, user_id, message])
+        rows = c.fetchall()
+        c.close()
+        for row in rows:
+            timer_data = TimerData.from_row(row)
+            if timer_data.run_date > datetime.datetime.now():
+                trigger = DateTrigger(run_date=timer_data.run_date)
+                self.scheduler.add_job(self.timer_callback, trigger, args=[timer_data])
 
             else:
-                channel = self.bot.get_channel(channel_id)
+                channel = self.bot.get_channel(timer_data.channel_id)
                 if channel:
-                    print(f"Expired timer detected: {message_id}, {channel.name}")
-                    self.bot.loop.create_task(channel.send(f"Sorry <@{user_id}>, the timer: **{message}** has expired "
+                    self.bot.loop.create_task(channel.send(f"Sorry <@{timer_data.user_id}>, the timer: **{timer_data.message}** has expired "
                                                            f"while the bot was down."))
-                    c.execute("DELETE FROM timers WHERE message_id=?", (message_id,))
-                    self.conn.commit()
+                    self.delete_timer(timer_data.message_id)
+    
+    def delete_timer(self, message_id: int):
+        c = self.conn.cursor()
+        c.execute("DELETE FROM timers WHERE message_id=?", (message_id,))
+        self.conn.commit()
         c.close()
 
-    async def timer_callback(self, message_id, channel_id, user_id, message):
-        print(f"Notifying users for message ID {message_id} in channel ID {channel_id}")
-        channel = self.bot.get_channel(channel_id)
+    async def timer_callback(self, timer_data: TimerData):
+        channel = self.bot.get_channel(timer_data.channel_id)
         if channel:
-            notification_msg = await channel.fetch_message(message_id)
+            notification_msg = await channel.fetch_message(timer_data.message_id)
             users_to_notify = []
 
             for reaction in notification_msg.reactions:
@@ -73,31 +75,10 @@ class Timer(commands.Cog):
                             users_to_notify.append(user.mention)
 
             if users_to_notify:
-                message = Timer.remove_role_mentions(message)
+                message = Timer.remove_role_mentions(timer_data.message)
                 await channel.send(f"**{message}** \n{' '.join(users_to_notify)}")
 
-            conn = sqlite3.connect(self.db_path)
-            c = conn.cursor()
-            c.execute("DELETE FROM timers WHERE message_id=?", (message_id,))
-            conn.commit()
-            conn.close()
-
-    # @app_commands.command(
-    #     name=CommandName.TIMER,
-    #     description="Sets a timer for a specified duration and notifies you with a message when the time is up."
-    # )
-    # async def timer(
-    #         self,
-    #         interaction: discord.Interaction,
-    #         message: str,
-    #         hours: int,
-    #         minutes: int,
-    # ):
-    #
-    #     sleep_time = self.convert_to_seconds(hours, minutes)
-    #     await interaction.response.send_message(f"Timer set for {hours} hours and {minutes} minutes.", ephemeral=True)
-    #     await asyncio.sleep(sleep_time)
-    #     await interaction.followup.send(f"{interaction.user.mention}, {message}", ephemeral=True)
+            self.delete_timer(timer_data.message_id)
 
     @app_commands.command(
         name=CommandName.TIMER,
@@ -121,14 +102,22 @@ class Timer(commands.Cog):
 
         await notification_msg.add_reaction('⏰')
         run_date = datetime.datetime.now() + datetime.timedelta(seconds=sleep_time)
-        print(f"Setting timer: {notification_msg.id}, {interaction.channel.id}, {interaction.user.id}, {message}, {run_date}")
+        
         trigger = DateTrigger(run_date=run_date)
-        self.scheduler.add_job(self.timer_callback, trigger, args=[notification_msg.id, interaction.channel.id, interaction.user.id, message])
+        timer_data = TimerData(
+            message_id=notification_msg.id,
+            channel_id=interaction.channel.id,
+            user_id=interaction.user.id,
+            message=message,
+            run_date=run_date
+        )
+        self.scheduler.add_job(self.timer_callback, trigger, args=[timer_data])
 
         c = self.conn.cursor()
         c.execute("INSERT INTO timers (message_id, channel_id, user_id, message, run_date) VALUES (?, ?, ?, ?, ?)",
-                  (notification_msg.id, interaction.channel.id, interaction.user.id, message, run_date.strftime("%Y-%m-%d %H:%M:%S")))
+                  timer_data.to_row())
         self.conn.commit()
+        c.close()
 
     @staticmethod
     def convert_to_seconds(hours: int = 0, minutes: int = 0, seconds: int = 0) -> int:
