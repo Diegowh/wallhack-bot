@@ -55,10 +55,7 @@ class EpicGamesQuerier:
                 else:
                     print(f"Failed to obtain access token: {await response.text()}")
 
-    async def _query_info(self, map_number: str):
-        """
-        Query server information using the Epic Games API.
-        """
+    async def _query_info(self, map_number: str = None):
         if not self.access_token:
             print("Access token is not available.")
             return None
@@ -68,28 +65,40 @@ class EpicGamesQuerier:
             'Authorization': f"Bearer {self.access_token}",
             'Content-Type': 'application/json'
         }
-        
-        payload = {
+        data = {
             'criteria': [
+                {
+                    'key': 'attributes.OFFICIALSERVER_s',
+                    'op': 'EQUAL',
+                    'value': '1'
+                },
+                {
+                    'key': 'attributes.SESSIONISPVE_l',
+                    'op': 'EQUAL',
+                    'value': 0
+                },
+                {
+                    'key': 'attributes.CLUSTERID_s',
+                    'op': 'EQUAL',
+                    'value': "PVPCrossplay"
+                }
+            ],
+        }
+
+        if map_number is not None:
+            data['criteria'].append(
                 {
                     'key': 'attributes.CUSTOMSERVERNAME_s',
                     'op': 'CONTAINS',
                     'value': map_number
-                },
-                {
-                    'key': 'attributes.OFFICIALSERVER_s',
-                    'op': 'EQUAL',
-                    'value': '1'  # Ensure the server is an official one
                 }
-                # Add other relevant criteria as needed
-            ]
-        }
-
+            )
+    
         async with aiohttp.ClientSession() as session:
             async with session.post(
                 url=url,
                 headers=headers,
-                json=payload,
+                json=data,
             ) as response:
 
                 if response.status == 200:
@@ -113,3 +122,8 @@ class EpicGamesQuerier:
 
         await self._get_client_access_token()
         return await self._query_info(map_number)
+    
+
+    async def fetch_all(self) -> Dict[str, Any]:
+        await self._get_client_access_token()
+        return await self._query_info()
